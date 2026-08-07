@@ -106,18 +106,47 @@ export const people: Person[] = [
     bio: 'Department of Biosciences and Bioengineering (BSBE). Worked on AI in dentistry — dental caries screening from multimodal data using VLMs.',
   },
 
-  // Example — copy this block for each additional team member, then delete
-  // the comment markers:
-  //
-  // {
-  //   _id: 'jane-doe',
-  //   name: 'Jane Doe',
-  //   role: 'PhD Student',
-  //   seniorityOrder: 1,
-  //   photo: '/images/people/jane-doe.jpg',
-  //   email: 'jane@iitb.ac.in',
-  //   googleScholar: 'https://scholar.google.com/citations?user=XXXXXXX',
-  //   linkedin: 'https://www.linkedin.com/in/jane-doe/',
-  //   bio: 'Short 2–4 sentence biography.',
-  // },
+{
+    _id: 'amrita-shirke',
+    name: 'Amrita Shirke',
+    role: 'PhD Student',
+    seniorityOrder: 4,
+    // photo: download from https://drive.google.com/open?id=1STIVPuA3okOC-lAb9chSCdLls9tPufzU
+    //        save to /public/images/people/amrita.jpg, then set: photo: '/images/people/amrita.jpg'
+    photo: '',
+    email: '',
+    googleScholar: 'https://scholar.google.com/citations?user=DZUWIMQAAAAJ&hl=en',
+    // NOTE: this is a personal "profile/me" link that only works when Amrita is
+    // logged in — replace with her public profile URL (linkedin.com/in/...).
+    linkedin: 'https://www.linkedin.com/mwlite/profile/me?trk=p_mwlite_feed-secondary_nav',
+    bio: 'PhD student at the Koita Centre for Digital Health (KCDH), IIT Bombay. Research focuses on wearable sensor design, low-power analog front-ends, and prototype building.',
+  },
+
+  {
+    _id: 'mayurakshi-mukherji',
+    name: 'Mayurakshi Mukherji',
+    role: 'PhD Student',
+    seniorityOrder: 5,
+    // photo: download from https://drive.google.com/open?id=1D2m7lYRFJG3neJEGNBfLXtKMVXCk2sCy
+    //        save to /public/images/people/mayurakshi.jpg, then set: photo: '/images/people/mayurakshi.jpg'
+    photo: '',
+    email: '',
+    googleScholar: 'https://scholar.google.com/citations?hl=en&user=fMp6E_oAAAAJ',
+    linkedin: 'https://www.linkedin.com/in/mayurakshi-mukherji-ba4a83144',
+    bio: 'PhD student at the Koita Centre for Digital Health (KCDH), IIT Bombay. Research focuses on intelligent acoustic systems for healthcare, with applications in AI-based diagnosis, monitoring, and early detection of diverse pathologies.',
+  },
+
+  {
+    _id: 'suraj-sahadev-racha',
+    name: 'Suraj Sahadev Racha',
+    role: 'PhD Student',
+    seniorityOrder: 6,
+    // photo: download from https://drive.google.com/open?id=19zzroKaS5stxdKo3w6EItZMR09BTrnqg
+    //        save to /public/images/people/suraj.jpg, then set: photo: '/images/people/suraj.jpg'
+    photo: '',
+    email: '',
+    googleScholar: 'https://scholar.google.com/citations?user=Lq8xtrMAAAAJ&hl=en',
+    linkedin: 'https://www.linkedin.com/in/suraj-racha-a9519b186',
+    bio: 'PhD student at the Koita Centre for Digital Health (KCDH), IIT Bombay. Research focuses on Large Language Models in healthcare — specifically mental health — including conversational frameworks, benchmarking, and training resources.',
+  },
 ]
