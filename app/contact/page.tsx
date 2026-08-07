@@ -3,6 +3,26 @@ export const metadata = {
   description: "Get in touch with the Sensing & Monitoring Lab at IIT Bombay for collaborations, positions, and enquiries.",
 }
 
+// ── Our locations ──────────────────────────────────────────────────────────
+// To add or edit a location, update this array. `embed` is the iframe src
+// (use the coordinate embed format below), `mapLink` opens Google Maps in a
+// new tab.
+const locations = [
+  {
+    name: 'Hardware Lab',
+    address: 'Room No. 306, Transit Building, IIT Bombay, Powai, Mumbai — 400076',
+    embed: 'https://maps.google.com/maps?q=19.1345835,72.9176572&z=17&output=embed',
+    mapLink: 'https://maps.app.goo.gl/RMGDti8dmVnQoHwK7',
+  },
+  {
+    name: 'KCDH — Office',
+    address: 'Koita Centre for Digital Health, IIT Bombay, Powai, Mumbai — 400076',
+    embed:
+      'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.4846644937406!2d72.91587759999999!3d19.1302507!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c7cdd0997009%3A0x62c5c13f16fcda81!2sKoita%20Centre%20for%20Digital%20Health!5e0!3m2!1sen!2sin!4v1772035970138!5m2!1sen!2sin',
+    mapLink: 'https://www.google.com/maps/search/?api=1&query=19.1302507,72.9158776',
+  },
+]
+
 export default function ContactPage() {
   return (
     <>
@@ -127,24 +147,70 @@ export default function ContactPage() {
         }
         .contact-row__value a:hover { border-color: #3c3489; }
 
-        /* ── MAP ── */
-        .contact-map {
-          border: 1px solid #e8e3db;
-          overflow: hidden;
+        /* ── MAPS (two locations, stacked) ── */
+        .contact-maps {
+          display: grid;
+          grid-template-rows: 1fr 1fr;
+          gap: 2px;
           height: 100%;
-          min-height: 320px;
-          position: relative;
         }
-        .contact-map iframe {
+        .contact-loc {
+          background: #fff;
+          border: 1px solid #e8e3db;
+          display: flex;
+          flex-direction: column;
+          min-height: 0;
+          overflow: hidden;
+        }
+        .contact-loc__head {
+          padding: 14px 18px;
+          border-bottom: 1px solid #f0ece5;
+        }
+        .contact-loc__head-top {
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: 12px;
+        }
+        .contact-loc__name {
+          font-family: 'EB Garamond', Georgia, serif;
+          font-size: 17px;
+          font-weight: 500;
+          color: #111;
+          margin: 0;
+        }
+        .contact-loc__link {
+          font-size: 11px;
+          font-weight: 500;
+          letter-spacing: 0.04em;
+          color: #3c3489;
+          text-decoration: none;
+          white-space: nowrap;
+          transition: color 0.2s;
+        }
+        .contact-loc__link:hover { color: #26215c; }
+        .contact-loc__addr {
+          font-size: 12.5px;
+          color: #7a7166;
+          font-weight: 300;
+          line-height: 1.55;
+          margin: 6px 0 0;
+        }
+        .contact-loc__map {
+          position: relative;
+          flex: 1;
+          min-height: 200px;
+        }
+        .contact-loc__map iframe {
+          position: absolute;
+          inset: 0;
           width: 100%;
           height: 100%;
-          position: absolute;
-          top: 0; left: 0;
           border: none;
           filter: grayscale(30%) contrast(1.05);
           transition: filter 0.4s ease;
         }
-        .contact-map:hover iframe {
+        .contact-loc:hover .contact-loc__map iframe {
           filter: grayscale(0%) contrast(1);
         }
 
@@ -255,7 +321,8 @@ export default function ContactPage() {
         @media (max-width: 768px) {
           .contact-body { padding: 60px 24px 80px; }
           .contact-grid { grid-template-columns: 1fr; }
-          .contact-map { min-height: 260px; position: relative; height: 260px; }
+          .contact-maps { grid-template-rows: unset; }
+          .contact-loc__map { height: 240px; min-height: 240px; }
           .joinus { grid-template-columns: 1fr; }
           .joinus__cards { grid-template-rows: unset; grid-template-columns: 1fr; }
         }
@@ -264,7 +331,7 @@ export default function ContactPage() {
       <main className="contact-root">
         <div className="contact-body">
 
-          {/* ── CONTACT INFO + MAP ── */}
+          {/* ── CONTACT INFO + MAPS ── */}
           <div className="contact-divider">
             <span className="contact-divider__label">Contact</span>
             <div className="contact-divider__line" />
@@ -278,23 +345,6 @@ export default function ContactPage() {
               <h2 className="contact-card__title">
                 Sensing & <em>Monitoring</em> Lab
               </h2>
-
-              <div className="contact-row">
-                <div className="contact-row__icon">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="contact-row__label">Address</p>
-                  <p className="contact-row__value">
-                    Koita Centre for Digital Health<br />
-                    IIT Bombay, Powai, Mumbai — 400076<br />
-                    Maharashtra, India
-                  </p>
-                </div>
-              </div>
 
               <div className="contact-row">
                 <div className="contact-row__icon">
@@ -353,7 +403,7 @@ export default function ContactPage() {
                 <div>
                   <p className="contact-row__label">Google Scholar</p>
                   <p className="contact-row__value">
-                    <a href="https://scholar.google.com/citations?user=https://scholar.google.com/citations?hl=en&user=86tKGf8AAAAJ" target="_blank" rel="noreferrer">
+                    <a href="https://scholar.google.com/citations?hl=en&user=86tKGf8AAAAJ" target="_blank" rel="noreferrer">
                       View Publications
                     </a>
                   </p>
@@ -361,15 +411,35 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* MAP */}
-            <div className="contact-map">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.4846644937406!2d72.91587759999999!3d19.1302507!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c7cdd0997009%3A0x62c5c13f16fcda81!2sKoita%20Centre%20for%20Digital%20Health!5e0!3m2!1sen!2sin!4v1772035970138!5m2!1sen!2sin"
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="IIT Bombay location"
-              />
+            {/* MAPS — two locations */}
+            <div className="contact-maps">
+              {locations.map((loc) => (
+                <div key={loc.name} className="contact-loc">
+                  <div className="contact-loc__head">
+                    <div className="contact-loc__head-top">
+                      <p className="contact-loc__name">{loc.name}</p>
+                      <a
+                        className="contact-loc__link"
+                        href={loc.mapLink}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Open in Maps ↗
+                      </a>
+                    </div>
+                    <p className="contact-loc__addr">{loc.address}</p>
+                  </div>
+                  <div className="contact-loc__map">
+                    <iframe
+                      src={loc.embed}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title={loc.name}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
