@@ -161,7 +161,7 @@ export const people: Person[] = [
     linkedin: 'https://www.linkedin.com/in/suraj-racha-a9519b186',
     bio: 'PhD student at the Koita Centre for Digital Health (KCDH), IIT Bombay. Research focuses on Large Language Models in healthcare — specifically mental health — including conversational frameworks, benchmarking, and training resources.',
   },
-]
+
 
 {
     _id: 'shiphi-abraham-thomas',
@@ -170,9 +170,10 @@ export const people: Person[] = [
     seniorityOrder: 1, // joined 2025
     // photo: download from https://drive.google.com/open?id=1tHt2cBy_Ex2TALTRpDHWMO73KrJeGYtr
     //        save to /public/images/people/shiphi.jpg, then set: photo: '/images/people/shiphi.jpg'
-    photo: '',
+    photo: '/images/people/shiphi.jpg',
     email: '',
     googleScholar: '', // none provided
     linkedin: 'https://www.linkedin.com/in/shiphi/',
     bio: 'Works on the design and development of innovative healthcare and wearable technologies, from initial design and prototyping to PCB design, fabrication, testing, and optimization. Currently developing hardware for an oral impedance device, an intraoral camera, and a smart ring for monitoring key physiological parameters — with a focus on electronic hardware through systematic design, prototyping, fabrication, testing, and performance evaluation.',
   },
+  ]
