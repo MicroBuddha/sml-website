@@ -1,16 +1,15 @@
 ```ts
 // People shown on the /people page and the homepage PI card.
 //
-// TO ADD SOMEONE: copy an existing entry, give it a unique `_id`, and fill in
-// the fields. Roles must be one of:
-// 'PI', 'PhD Student', 'Masters Student', 'Undergraduate',
-// 'Research Staff', 'Project Staff', 'IDDDP', 'Alumni'
-// — these control which section of the People page a person appears in.
+// TO ADD SOMEONE: copy an existing entry, give it a unique _id, and fill in
+// the fields. Roles must be one of: 'PI', 'PhD Student', 'Masters Student',
+// 'Undergraduate', 'Research Staff', 'Project Staff', 'IDDDP', 'Alumni'
+// these control which section of the People page a person appears in.
 //
-// `photo`: put the image file in /public/images/people/ and reference it as
+// photo: put the image file in /public/images/people/ and reference it as
 // e.g. '/images/people/nirmal.jpg'. Leave undefined for a placeholder avatar.
 //
-// `seniorityOrder`: controls sort order *within* a role group — lower numbers
+// seniorityOrder: controls sort order within a role group - lower numbers
 // appear first. People without a value are sorted alphabetically after those
 // with one.
 
@@ -60,21 +59,7 @@ export const people: Person[] = [
       'https://scholar.google.com/citations?user=zlPtcn4AAAAJ&hl=en',
     linkedin: 'https://www.linkedin.com/in/buddha92/',
     bio:
-      'Working in the field of computer vision for healthcare at the Koita Centre for Digital Health (KCDH), with a focus on oral pre-cancer detection.',
-  },
-
-  {
-    _id: 'suraj-sahadev-racha',
-    name: 'Suraj Sahadev Racha',
-    role: 'PhD Student',
-    seniorityOrder: 2,
-    photo: '/images/people/suraj.jpg',
-    email: '',
-    googleScholar:
-      'https://scholar.google.com/citations?user=Lq8xtrMAAAAJ&hl=en',
-    linkedin: 'https://www.linkedin.com/in/suraj-racha-a9519b186',
-    bio:
-      'PhD student at the Koita Centre for Digital Health (KCDH), IIT Bombay. Research focuses on Large Language Models in healthcare, specifically mental health, including conversational frameworks, benchmarking, and training resources.',
+      'Working in the field of computer vision for healthcare, at the Koita Centre for Digital Health (KCDH) — oral pre-cancer detection.',
   },
 
   {
@@ -103,7 +88,44 @@ export const people: Person[] = [
     linkedin:
       'https://www.linkedin.com/in/bipasha-sarkar-497b9628a',
     bio:
-      "PhD student and IndiaAI Fellow. Completed bachelor's and master's degrees in Microbiology and previously worked as a Junior Research Fellow in the Department of Biosciences and Bioengineering, IIT Bombay. Research focuses on biomarker-based diabetes prediction using wearable sensors and personalized health monitoring.",
+      "PhD student (India AI Fellow). Completed bachelor's and master's degrees in Microbiology, and previously worked as a Junior Research Fellow in the Department of Biosciences and Bioengineering, IIT Bombay. Research focuses on biomarker-based diabetes prediction using wearable sensors and personalized health monitoring.",
+  },
+
+  {
+    _id: 'nikita-mahale',
+    name: 'Nikita Mahale',
+    role: 'Masters Student',
+    photo: '/images/people/nikita.jpg',
+    email: '',
+    googleScholar: '',
+    linkedin: 'https://www.linkedin.com/in/nikitamahale15',
+    bio:
+      'Pursuing an M.S. by Research at the Koita Centre for Digital Health (KCDH), IIT Bombay. Completed a B.Pharm. and was selected as an IndiaAI Fellow. Research focuses on AI-based acoustic signal processing for disease diagnosis — heart sounds, lung sounds, cough analysis, and sleep apnea detection.',
+  },
+
+  {
+    _id: 'sameer-kishor-nilkhan',
+    name: 'Sameer Kishor Nilkhan',
+    role: 'Masters Student',
+    photo: '/images/people/Sameer.jpg',
+    email: '',
+    googleScholar: '',
+    linkedin: 'https://www.linkedin.com/in/sameer302/',
+    bio:
+      'Working in the domain of edge AI, exploring optimizations at different stages of AI/ML deployment on edge devices — from network design and training methods to model compression and network partitioning.',
+  },
+
+  {
+    _id: 'neena-s-nair',
+    name: 'Neena S Nair',
+    role: 'Alumni',
+    photo: '/images/people/neena.jpg',
+    email: '',
+    googleScholar: '',
+    linkedin:
+      'https://www.linkedin.com/in/dr-neena-s-nair-359a292a7',
+    bio:
+      'Department of Biosciences and Bioengineering (BSBE). Worked on AI in dentistry — dental caries screening from multimodal data using VLMs.',
   },
 
   {
@@ -137,27 +159,18 @@ export const people: Person[] = [
   },
 
   {
-    _id: 'nikita-mahale',
-    name: 'Nikita Mahale',
-    role: 'Masters Student',
-    photo: '/images/people/nikita.jpg',
+    _id: 'suraj-sahadev-racha',
+    name: 'Suraj Sahadev Racha',
+    role: 'PhD Student',
+    seniorityOrder: 2,
+    photo: '/images/people/suraj.jpg',
     email: '',
-    googleScholar: '',
-    linkedin: 'https://www.linkedin.com/in/nikitamahale15',
+    googleScholar:
+      'https://scholar.google.com/citations?user=Lq8xtrMAAAAJ&hl=en',
+    linkedin:
+      'https://www.linkedin.com/in/suraj-racha-a9519b186',
     bio:
-      'Pursuing an M.S. by Research at the Koita Centre for Digital Health (KCDH), IIT Bombay. Completed a B.Pharm. and was selected as an IndiaAI Fellow. Research focuses on AI-based acoustic signal processing for disease diagnosis, including heart sounds, lung sounds, cough analysis, and sleep apnea detection.',
-  },
-
-  {
-    _id: 'sameer-kishor-nilkhan',
-    name: 'Sameer Kishor Nilkhan',
-    role: 'Masters Student',
-    photo: '/images/people/Sameer.jpg',
-    email: '',
-    googleScholar: '',
-    linkedin: 'https://www.linkedin.com/in/sameer302/',
-    bio:
-      'Working in the domain of edge AI, exploring optimizations at different stages of AI/ML deployment on edge devices, from network design and training methods to model compression and network partitioning.',
+      'PhD student at the Koita Centre for Digital Health (KCDH), IIT Bombay. Research focuses on Large Language Models in healthcare — specifically mental health — including conversational frameworks, benchmarking, and training resources.',
   },
 
   {
@@ -170,20 +183,7 @@ export const people: Person[] = [
     googleScholar: '',
     linkedin: 'https://www.linkedin.com/in/shiphi/',
     bio:
-      'Works on the design and development of innovative healthcare and wearable technologies at the Sensing & Monitoring Foundation. His work spans initial design and prototyping through PCB design, fabrication, testing, optimization, and performance evaluation. He is currently involved in developing hardware for an oral impedance device, an intraoral camera, and a smart ring for monitoring key physiological parameters.',
-  },
-
-  {
-    _id: 'neena-s-nair',
-    name: 'Neena S Nair',
-    role: 'Alumni',
-    photo: '/images/people/neena.jpg',
-    email: '',
-    googleScholar: '',
-    linkedin:
-      'https://www.linkedin.com/in/dr-neena-s-nair-359a292a7',
-    bio:
-      'Department of Biosciences and Bioengineering (BSBE). Worked on AI in dentistry, particularly dental caries screening from multimodal data using vision-language models.',
+      'Works on the design and development of innovative healthcare and wearable technologies. His work includes initial design and prototyping to PCB design, fabrication, testing, and optimization. He is currently involved in developing the hardware for an oral impedance device, an intraoral camera, and a smart ring for monitoring key physiological parameters. His work focuses on developing and optimizing electronic hardware through systematic design, prototyping, fabrication, testing, and performance evaluation.',
   },
 ]
 ```
