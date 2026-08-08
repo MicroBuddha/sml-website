@@ -103,7 +103,7 @@ export default function HomePage() {
           height: 640px;
           top: -200px;
           left: -140px;
-          background: radial-gradient(circle, rgba(60,52,137,0.13), rgba(60,52,137,0) 70%);
+          background: radial-gradient(circle, rgba(60,52,137,0.32), rgba(60,52,137,0) 70%);
           animation: heroDrift1 28s ease-in-out infinite alternate;
         }
         .home__ambient::after {
@@ -111,13 +111,13 @@ export default function HomePage() {
           height: 600px;
           top: -40px;
           right: -180px;
-          background: radial-gradient(circle, rgba(133,79,11,0.10), rgba(133,79,11,0) 70%);
+          background: radial-gradient(circle, rgba(133,79,11,0.26), rgba(133,79,11,0) 70%);
           animation: heroDrift2 34s ease-in-out infinite alternate;
         }
         .home__grid {
           position: absolute;
           inset: 0;
-          background-image: radial-gradient(rgba(60,52,137,0.05) 1px, transparent 1px);
+          background-image: radial-gradient(rgba(60,52,137,0.12) 1px, transparent 1px);
           background-size: 26px 26px;
           -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 76%);
           mask-image: linear-gradient(180deg, #000 0%, transparent 76%);
