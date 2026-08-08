@@ -9,7 +9,9 @@ import Testimonials from './components/Testimonials'
 export default function HomePage() {
   const pi = people.find((p) => p.role === 'PI')
 
-  // Pool a few recent workshop/event photos for the "Life in the Lab" strip.
+  // "Life in the Lab" strip — built dynamically from your events.
+  // Any event in content/events.ts that has a `gallery` or `coverImage` shows
+  // up here automatically. Add photos to an event and they appear on their own.
   const recentEvents = [...events]
     .filter((e) => (e.gallery && e.gallery.length > 0) || e.coverImage)
     .sort((a, b) => {
@@ -18,6 +20,7 @@ export default function HomePage() {
       return new Date(b.date).getTime() - new Date(a.date).getTime()
     })
     .slice(0, 6)
+
   const labImages = recentEvents
     .flatMap((e) => {
       const imgs = e.gallery && e.gallery.length > 0 ? e.gallery : e.coverImage ? [e.coverImage] : []
@@ -68,9 +71,64 @@ export default function HomePage() {
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap');
 
         .home {
+          position: relative;
           font-family: 'DM Sans', sans-serif;
           background: #faf9f7;
           color: #1a1a1a;
+          overflow-x: clip;
+        }
+
+        /* ── AMBIENT BACKDROP ── subtle drifting glows + faint sensor grid,
+           sitting behind the hero. Kept low-opacity so it never competes
+           with the content. */
+        .home__ambient {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 760px;
+          overflow: hidden;
+          pointer-events: none;
+          z-index: -1;
+        }
+        .home__ambient::before,
+        .home__ambient::after {
+          content: '';
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(90px);
+        }
+        .home__ambient::before {
+          width: 640px;
+          height: 640px;
+          top: -200px;
+          left: -140px;
+          background: radial-gradient(circle, rgba(60,52,137,0.13), rgba(60,52,137,0) 70%);
+          animation: heroDrift1 28s ease-in-out infinite alternate;
+        }
+        .home__ambient::after {
+          width: 600px;
+          height: 600px;
+          top: -40px;
+          right: -180px;
+          background: radial-gradient(circle, rgba(133,79,11,0.10), rgba(133,79,11,0) 70%);
+          animation: heroDrift2 34s ease-in-out infinite alternate;
+        }
+        .home__grid {
+          position: absolute;
+          inset: 0;
+          background-image: radial-gradient(rgba(60,52,137,0.05) 1px, transparent 1px);
+          background-size: 26px 26px;
+          -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 76%);
+          mask-image: linear-gradient(180deg, #000 0%, transparent 76%);
+        }
+        @keyframes heroDrift1 {
+          from { transform: translate(0, 0); }
+          to   { transform: translate(70px, 46px); }
+        }
+        @keyframes heroDrift2 {
+          from { transform: translate(0, 0); }
+          to   { transform: translate(-56px, 34px); }
         }
 
         /* ── HERO ── */
@@ -230,6 +288,79 @@ export default function HomePage() {
           font-weight: 500;
           margin-top: 4px;
           display: block;
+        }
+
+        /* ── HERO ASIDE (card + live signal panel) ── */
+        .hero__aside {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        /* ── LIVE SIGNAL PANEL ── an animated ECG-style trace that fills the
+           space under the PI card and nods to what the lab actually does:
+           continuous physiological monitoring. */
+        .hero__signal {
+          background: #fff;
+          border: 1px solid #e8e3db;
+          border-radius: 4px;
+          padding: 15px 18px 12px;
+          overflow: hidden;
+        }
+        .hero__signal-head {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 8px;
+        }
+        .hero__signal-label {
+          font-size: 10px;
+          font-weight: 500;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #9e8a67;
+        }
+        .hero__signal-live {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 10px;
+          font-weight: 500;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #3c3489;
+        }
+        .hero__signal-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #3c3489;
+          animation: pulseDot 1.6s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+          0%, 100% { opacity: 0.3; transform: scale(0.8); }
+          50%      { opacity: 1;   transform: scale(1.15); }
+        }
+        .hero__signal-wave {
+          display: block;
+          width: 100%;
+          height: 44px;
+        }
+        .hero__signal-trace {
+          transform-box: view-box;
+          transform-origin: 0 0;
+          animation: ecgScroll 3.2s linear infinite;
+        }
+        @keyframes ecgScroll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-120px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .home__ambient::before,
+          .home__ambient::after,
+          .hero__signal-trace,
+          .hero__signal-dot { animation: none; }
         }
 
         /* ── DIVIDER ── */
@@ -514,7 +645,7 @@ export default function HomePage() {
         /* ── RESPONSIVE ── */
         @media (max-width: 900px) {
           .hero { grid-template-columns: 1fr; gap: 48px; }
-          .hero__card { max-width: 400px; }
+          .hero__aside { max-width: 400px; }
           .mission { grid-template-columns: 1fr; gap: 40px; }
           .research__grid { grid-template-columns: repeat(2, 1fr); }
         }
@@ -528,6 +659,9 @@ export default function HomePage() {
       `}</style>
 
       <div className="home">
+        <div className="home__ambient" aria-hidden="true">
+          <div className="home__grid" />
+        </div>
 
         {/* ── HERO ── */}
         <section className="hero">
@@ -548,7 +682,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* PI CARD */}
+          {/* ASIDE — PI card + live signal panel */}
+          <div className="hero__aside">
           <div className="hero__card">
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               {pi?.photo ? (
@@ -583,6 +718,36 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* LIVE SIGNAL PANEL */}
+          <div className="hero__signal">
+            <div className="hero__signal-head">
+              <span className="hero__signal-label">Continuous signal monitoring</span>
+              <span className="hero__signal-live">
+                <span className="hero__signal-dot" />
+                Live
+              </span>
+            </div>
+            <svg
+              className="hero__signal-wave"
+              viewBox="0 0 300 48"
+              preserveAspectRatio="none"
+              fill="none"
+              aria-hidden="true"
+            >
+              <g className="hero__signal-trace">
+                <path
+                  d="M0,24 L60,24 L66,24 L72,8 L78,40 L84,20 L92,24 L120,24 L180,24 L186,24 L192,8 L198,40 L204,20 L212,24 L240,24 L300,24 L306,24 L312,8 L318,40 L324,20 L332,24 L360,24 L420,24 L426,24 L432,8 L438,40 L444,20 L452,24 L480,24 L540,24 L546,24 L552,8 L558,40 L564,20 L572,24 L600,24"
+                  stroke="#3c3489"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity="0.55"
+                />
+              </g>
+            </svg>
+          </div>
           </div>
         </section>
 
