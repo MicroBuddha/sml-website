@@ -18,6 +18,21 @@ export interface EventItem {
 }
 
 export const events: EventItem[] = [
+  {
+    _id: 'life-in-the-lab',
+    title: 'Life in the Lab',
+    category: 'event',
+    date: '2026-01-01',
+    location: 'Sensing & Monitoring Lab, IIT Bombay',
+    description: 'Snapshots from day-to-day work and activities in the lab.',
+    gallery: [
+      '/images/events/lab_photo.jpg',
+      '/images/events/lab_photo2.jpg',
+      '/images/events/lab_photo3.jpg',
+      '/images/events/lab_photo4.jpg',
+    ],
+  },
+
   // Example — copy this block per item, then delete the comment markers:
   //
   // {
