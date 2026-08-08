@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { people } from '@/content/people'
-import { events } from '@/content/events'
+
 import { hero, mission, highlights, collaborators, testimonials } from '@/content/home'
 import ImageCarousel from './components/ImageCarousel'
 import Collaborators from './components/Collaborators'
@@ -18,16 +18,12 @@ export default function HomePage() {
       return new Date(b.date).getTime() - new Date(a.date).getTime()
     })
     .slice(0, 6)
-  const labImages = recentEvents
-    .flatMap((e) => {
-      const imgs = e.gallery && e.gallery.length > 0 ? e.gallery : e.coverImage ? [e.coverImage] : []
-      return imgs.map((src) => ({
-        url: src as string,
-        alt: e.title,
-        caption: e.title,
-      }))
-    })
-    .slice(0, 8)
+  const labImages = [
+    { url: '/images/events/lab_photo.jpg', alt: 'Life in the lab', caption: 'Life in the lab' },
+    { url: '/images/events/lab_photo2.jpg', alt: 'Life in the lab', caption: 'Life in the lab' },
+    { url: '/images/events/lab_photo3.jpg', alt: 'Life in the lab', caption: 'Life in the lab' },
+    { url: '/images/events/lab_photo4.jpg', alt: 'Life in the lab', caption: 'Life in the lab' },
+  ]
 
   const researchAreas = [
     {
