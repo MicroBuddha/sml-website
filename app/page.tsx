@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { people } from '@/content/people'
-
+import { events } from '@/content/events'
 import { hero, mission, highlights, collaborators, testimonials } from '@/content/home'
 import ImageCarousel from './components/ImageCarousel'
 import Collaborators from './components/Collaborators'
@@ -9,7 +9,9 @@ import Testimonials from './components/Testimonials'
 export default function HomePage() {
   const pi = people.find((p) => p.role === 'PI')
 
-  // Pool a few recent workshop/event photos for the "Life in the Lab" strip.
+  // "Life in the Lab" strip — built dynamically from your events.
+  // Any event in content/events.ts that has a `gallery` or `coverImage` shows
+  // up here automatically. Add photos to an event and they appear on their own.
   const recentEvents = [...events]
     .filter((e) => (e.gallery && e.gallery.length > 0) || e.coverImage)
     .sort((a, b) => {
@@ -18,12 +20,17 @@ export default function HomePage() {
       return new Date(b.date).getTime() - new Date(a.date).getTime()
     })
     .slice(0, 6)
-  const labImages = [
-    { url: '/images/events/lab_photo.jpg', alt: 'Life in the lab', caption: 'Life in the lab' },
-    { url: '/images/events/lab_photo2.jpg', alt: 'Life in the lab', caption: 'Life in the lab' },
-    { url: '/images/events/lab_photo3.jpg', alt: 'Life in the lab', caption: 'Life in the lab' },
-    { url: '/images/events/lab_photo4.jpg', alt: 'Life in the lab', caption: 'Life in the lab' },
-  ]
+
+  const labImages = recentEvents
+    .flatMap((e) => {
+      const imgs = e.gallery && e.gallery.length > 0 ? e.gallery : e.coverImage ? [e.coverImage] : []
+      return imgs.map((src) => ({
+        url: src as string,
+        alt: e.title,
+        caption: e.title,
+      }))
+    })
+    .slice(0, 8)
 
   const researchAreas = [
     {
