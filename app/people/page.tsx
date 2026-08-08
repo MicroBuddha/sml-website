@@ -13,8 +13,21 @@ export default function PeoplePage() {
     'Masters Student',
     'Undergraduate',
     'Research Staff',
+    'Project Staff',
+    'IDDDP',
     'Alumni',
   ]
+
+  const roleLabels: Record<string, string> = {
+    'PI': 'Principal Investigator',
+    'PhD Student': 'PhD Students',
+    'Masters Student': 'Masters Students',
+    'Undergraduate': 'Undergraduates',
+    'Research Staff': 'Research Staff',
+    'Project Staff': 'Project Staff',
+    'IDDDP': 'IDDDP',
+    'Alumni': 'Alumni',
+  }
 
   // Seniority-wise ordering within each role group: lower seniorityOrder first,
   // people without one are sorted alphabetically after those with one.
@@ -371,7 +384,7 @@ export default function PeoplePage() {
             if (members.length === 0) return null
 
             const isPI = role === 'PI'
-            const sectionLabel = isPI ? 'Principal Investigator' : `${role}s`
+            const sectionLabel = roleLabels[role] ?? role
 
             return (
               <section key={role} className="people-section">
