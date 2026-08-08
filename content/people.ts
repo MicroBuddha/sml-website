@@ -157,7 +157,7 @@ export const people: Person[] = [
     seniorityOrder: 4,
     // photo: download from https://drive.google.com/open?id=1STIVPuA3okOC-lAb9chSCdLls9tPufzU
     //        save to /public/images/people/amrita.jpg, then set: photo: '/images/people/amrita.jpg'
-    photo: '',
+    photo: '/images/people/amrita.jpg',
     email: '',
     googleScholar: 'https://scholar.google.com/citations?user=DZUWIMQAAAAJ&hl=en',
     // NOTE: this is a personal "profile/me" link that only works when Amrita is
@@ -173,7 +173,7 @@ export const people: Person[] = [
     seniorityOrder: 5,
     // photo: download from https://drive.google.com/open?id=1D2m7lYRFJG3neJEGNBfLXtKMVXCk2sCy
     //        save to /public/images/people/mayurakshi.jpg, then set: photo: '/images/people/mayurakshi.jpg'
-    photo: '',
+    photo: '/images/people/mayurakshi.jpg',
     email: '',
     googleScholar: 'https://scholar.google.com/citations?hl=en&user=fMp6E_oAAAAJ',
     linkedin: 'https://www.linkedin.com/in/mayurakshi-mukherji-ba4a83144',
@@ -187,7 +187,7 @@ export const people: Person[] = [
     seniorityOrder: 6,
     // photo: download from https://drive.google.com/open?id=19zzroKaS5stxdKo3w6EItZMR09BTrnqg
     //        save to /public/images/people/suraj.jpg, then set: photo: '/images/people/suraj.jpg'
-    photo: '',
+    photo: '/images/people/suraj.jpg',
     email: '',
     googleScholar: 'https://scholar.google.com/citations?user=Lq8xtrMAAAAJ&hl=en',
     linkedin: 'https://www.linkedin.com/in/suraj-racha-a9519b186',
