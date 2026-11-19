@@ -24,6 +24,10 @@ export default function Footer() {
             <a href={`mailto:${LAB_EMAIL}`} style={{ display: 'inline-block', marginTop: 16, color: 'var(--amber)' }}>
               {LAB_EMAIL}
             </a>
+            <a href="https://www.kcdh.iitb.ac.in" target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: 26 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/logos/kcdh-iitb-white.png" alt="Koita Centre for Digital Health, IIT Bombay" style={{ height: 52, width: 'auto' }} />
+            </a>
           </div>
           {footerLinks.map((col) => (
             <div key={col.heading}>

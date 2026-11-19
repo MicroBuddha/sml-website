@@ -39,7 +39,8 @@ export const footerLinks = [
   {
     heading: 'Connect',
     links: [
-      { href: '/connect#apply', label: 'Apply for an internship' },
+      { href: '/connect?type=internship#apply', label: 'Apply for an internship' },
+      { href: '/connect?type=collaboration#apply', label: 'Collaborate with us' },
       { href: '/connect#visit', label: 'Visit the lab' },
       { href: `mailto:${LAB_EMAIL}`, label: 'Email the PI' },
     ],

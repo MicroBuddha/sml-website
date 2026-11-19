@@ -4,7 +4,7 @@ import { LAB_EMAIL } from '@/content/site'
 import PageHead from '../components/PageHead'
 import Footer from '../components/Footer'
 import Reveal from '../components/Reveal'
-import ApplyForm from './ApplyForm'
+import ConnectForm from './ConnectForm'
 import Locations from './Locations'
 
 export const metadata = {
@@ -30,23 +30,23 @@ export default function ConnectPage() {
       `}</style>
 
       <PageHead kicker="Connect" title="Join us, work with us, or come and visit">
-        Apply for an internship with your CV, propose a collaboration, or find your way to the lab.
+        Apply for an internship, ask about PhD positions, propose a collaboration or invite a workshop — or find your way to the lab.
       </PageHead>
 
       <main>
         <section className="section" style={{ paddingBottom: 0 }}>
           <div className="wrap cn__ways">
-            <Reveal><a className="way" href="#apply">
+            <Reveal><a className="way" href="/connect?type=internship#apply">
               <span className="way__icon" aria-hidden="true">✎</span>
               <span className="h3">Apply for an internship</span>
               <span className="muted">Pick a project, upload your CV and tell us when you can start.</span>
               <span className="way__go">Start an application</span>
             </a></Reveal>
-            <Reveal delay={80}><a className="way" href={`mailto:${LAB_EMAIL}?subject=${encodeURIComponent('Collaboration enquiry')}`}>
+            <Reveal delay={80}><a className="way" href="/connect?type=collaboration#apply">
               <span className="way__icon" aria-hidden="true">⇄</span>
               <span className="h3">Collaborate</span>
-              <span className="muted">Clinicians, hospitals and industry partners: write to {pi?.name ?? 'the PI'} with your proposal.</span>
-              <span className="way__go">{LAB_EMAIL}</span>
+              <span className="muted">Clinicians, hospitals and industry partners: send {pi?.name ?? 'the PI'} your proposal through the form.</span>
+              <span className="way__go">Send a proposal</span>
             </a></Reveal>
             <Reveal delay={160}><a className="way" href="#visit">
               <span className="way__icon" aria-hidden="true">⌖</span>
@@ -60,17 +60,17 @@ export default function ConnectPage() {
         <section id="apply" className="section" style={{ scrollMarginTop: 90 }}>
           <div className="wrap cn__apply">
             <div className="cn__aside">
-              <h2 className="h2">Internship application</h2>
+              <h2 className="h2">Write to us</h2>
               <p className="muted" style={{ marginTop: 14 }}>
-                Takes about three minutes. We read every application and reply to shortlisted students by email, usually within two weeks.
+                Choose what you&apos;re writing about. Internship applications take about three minutes; other messages, one.
               </p>
               <ul className="muted" style={{ marginTop: 22, paddingLeft: 18, display: 'grid', gap: 8 }}>
-                <li>Have your CV ready as a PDF</li>
-                <li>Say which project you want and why</li>
-                <li>Give your earliest start date and how long you can stay</li>
+                <li>For internships, have your CV ready as a PDF</li>
+                <li>We reply by email, usually within two weeks</li>
+                <li>Prefer email? Write to <a href={`mailto:${LAB_EMAIL}`} style={{ color: 'var(--indigo)' }}>{LAB_EMAIL}</a></li>
               </ul>
             </div>
-            <ApplyForm openings={openings} />
+            <ConnectForm openings={openings} />
           </div>
         </section>
 

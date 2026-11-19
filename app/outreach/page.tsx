@@ -117,7 +117,7 @@ export default function OutreachPage() {
                 </p>
               </div>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                <Link href="/connect" className="btn btn--indigo">Invite us</Link>
+                <a href="/connect?type=workshop#apply" className="btn btn--indigo">Invite us</a>
                 <Link href="/foundation" className="btn btn--outline">Foundation</Link>
               </div>
             </Reveal>

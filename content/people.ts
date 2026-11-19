@@ -2,7 +2,7 @@
 //
 // TO ADD SOMEONE: copy an existing entry, give it a unique `_id`, and fill in
 // the fields. Roles must be one of: 'PI', 'PhD Student', 'Masters Student',
-// 'Undergraduate', 'Research Staff', 'Alumni' — these control which section
+// 'IDDDP', 'Undergraduate', 'Research Staff', 'Project Staff', 'Alumni' — these control which section
 // of the People page a person appears in.
 //
 // `photo`: put the image file in /public/images/people/ and reference it as
@@ -162,18 +162,16 @@ export const people: Person[] = [
     bio: 'PhD student at the Koita Centre for Digital Health (KCDH), IIT Bombay. Research focuses on Large Language Models in healthcare — specifically mental health — including conversational frameworks, benchmarking, and training resources.',
   },
 
+  // ── IDDDP STUDENTS ── they get their own section on the People page.
+  // Copy this block once per student, remove the // marks, and fill it in:
+  //
+  // {
+  //   _id: 'firstname-lastname',
+  //   name: 'Firstname Lastname',
+  //   role: 'IDDDP',
+  //   photo: '/images/people/firstname.jpg',
+  //   linkedin: '',
+  //   bio: 'One or two sentences about their project.',
+  // },
 
-{
-    _id: 'shiphi-abraham-thomas',
-    name: 'Shiphi Abraham Thomas',
-    role: 'Project Staff',
-    seniorityOrder: 1, // joined 2025
-    // photo: download from https://drive.google.com/open?id=1tHt2cBy_Ex2TALTRpDHWMO73KrJeGYtr
-    //        save to /public/images/people/shiphi.jpg, then set: photo: '/images/people/shiphi.jpg'
-    photo: '/images/people/shiphi.jpg',
-    email: '',
-    googleScholar: '', // none provided
-    linkedin: 'https://www.linkedin.com/in/shiphi/',
-    bio: 'Works on the design and development of innovative healthcare and wearable technologies, from initial design and prototyping to PCB design, fabrication, testing, and optimization. Currently developing hardware for an oral impedance device, an intraoral camera, and a smart ring for monitoring key physiological parameters — with a focus on electronic hardware through systematic design, prototyping, fabrication, testing, and performance evaluation.',
-  },
   ]

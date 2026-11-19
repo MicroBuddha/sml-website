@@ -2,17 +2,36 @@
 // CONNECT PAGE — internship form, open positions and lab locations.
 // ─────────────────────────────────────────────────────────────────────────
 
-// ⚙️  WHERE INTERNSHIP APPLICATIONS GO
-// Paste the Google Apps Script web-app URL here (setup steps are in
-// docs/internship-form-setup.md). Each application then lands as a row in
-// a Google Sheet, and the uploaded CV is saved to a Google Drive folder.
+// ⚙️  WHERE FORM SUBMISSIONS GO  (the only setting you need)
+// Paste the Google Apps Script web-app URL here — setup steps are in
+// docs/form-setup.md. Every submission is then saved as a row in a Google
+// Sheet (one tab per form type), uploaded CVs/files are saved in a Google
+// Drive folder, and the lab gets an email for each one.
 //
-// While this is left empty, the form still works: it opens the applicant's
-// email app with everything filled in and asks them to attach their CV.
-export const APPLICATION_ENDPOINT = ''
+// ⚠️ While this is empty NOTHING IS SAVED: the form only opens the visitor's
+// own email app, pre-filled, and asks them to attach their CV themselves.
+export const FORM_ENDPOINT = ''
 
-// Largest CV file applicants can upload (in MB).
-export const MAX_CV_MB = 5
+// Largest file visitors can upload (in MB).
+export const MAX_FILE_MB = 5
+
+// ── What visitors can contact the lab about ─────────────────────────────
+// Shown as choices at the top of the Connect form. 'internship' opens the
+// full internship application; the others open a shorter enquiry form.
+export const enquiryTypes = [
+  { id: 'internship', label: 'Internship', desc: 'Apply for a project, with your CV' },
+  { id: 'phd-masters', label: 'PhD or Masters', desc: 'Ask about joining for a degree' },
+  { id: 'collaboration', label: 'Collaboration', desc: 'Clinical, academic or industry partnership' },
+  { id: 'workshop', label: 'Invite a workshop', desc: 'A session at your institution or event' },
+  { id: 'other', label: 'Something else', desc: 'Any other question' },
+] as const
+
+// ── Internship form drop-downs ──────────────────────────────────────────
+export const programmeOptions = [
+  'B.Tech / B.E.', 'B.Sc', 'B.Pharm', 'BDS', 'MBBS', 'Integrated / dual degree',
+  'M.Tech / M.E.', 'M.Sc', 'MS by Research', 'M.Pharm', 'MBA', 'PhD', 'Other',
+]
+export const yearOptions = ['1st year', '2nd year', '3rd year', '4th year', '5th year', 'Final year', 'Graduated']
 
 // ── Open positions ──────────────────────────────────────────────────────
 // These show as selectable cards above the form. Set `open: false` to show

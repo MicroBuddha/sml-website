@@ -3,8 +3,9 @@ import { people } from '@/content/people'
 import { events } from '@/content/events'
 import { publications } from '@/content/publications'
 import { projects, projectAreas } from '@/content/projects'
-import { hero, mission, highlights, collaborators } from '@/content/home'
-import SignalScope from './components/SignalScope'
+import { hero, mission, highlights, collaborators, news } from '@/content/home'
+import { openings } from '@/content/connect'
+import HeroFeed, { type FeedItem } from './components/HeroFeed'
 import Pipeline from './components/Pipeline'
 import Collaborators from './components/Collaborators'
 import Gallery from './components/Gallery'
@@ -21,6 +22,43 @@ export default function HomePage() {
   const ongoing = projects.filter((p) => p.status === 'ongoing').length
 
   const missionHtml = mission.quote.replace('{em}', '').replace('{/em}', '')
+
+  // ── "What's new" panel: news first, then auto-built from the content files ──
+  const feed: FeedItem[] = news.map((n, k) => ({
+    key: `news-${k}`, tab: n.label, label: n.label, title: n.title, text: n.text,
+    href: n.href, cta: n.cta, image: n.image, mark: 'Join', accent: '#e39a2d',
+  }))
+  const latestPaper = [...publications].sort((a, b) => b.year - a.year)[0]
+  if (latestPaper) {
+    const link = latestPaper.link ?? (latestPaper.doi ? `https://doi.org/${latestPaper.doi}` : latestPaper.arxivId ? `https://arxiv.org/abs/${latestPaper.arxivId}` : undefined)
+    feed.push({
+      key: 'paper', tab: 'Latest paper', label: 'Latest publication', title: latestPaper.title,
+      text: latestPaper.authors, meta: [latestPaper.journal, latestPaper.year].filter(Boolean).join(', '),
+      mark: String(latestPaper.year), href: link ?? '/publications', external: !!link, cta: link ? 'Read the paper' : 'All publications', accent: '#a9a3ff',
+    })
+  }
+  const latestWorkshop = events.filter((e) => e.category === 'workshop').sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))[0]
+  if (latestWorkshop) {
+    feed.push({
+      key: 'workshop', tab: 'Latest workshop', label: 'Workshop', title: latestWorkshop.title,
+      text: latestWorkshop.location, image: latestWorkshop.coverImage ?? latestWorkshop.gallery?.[0] ?? labPhotos[0],
+      meta: latestWorkshop.date ? new Date(latestWorkshop.date + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : undefined,
+      href: '/outreach', cta: 'See workshops', accent: '#7fd1c1',
+    })
+  }
+  const open = openings.filter((o) => o.open && o.id !== 'general')
+  if (open.length && !news.some((n) => n.href?.startsWith('/connect'))) {
+    feed.push({
+      key: 'openings', tab: 'Openings', label: `${open.length} open internship projects`, title: open.map((o) => o.title).join(' · '),
+      text: 'Pick a project, upload your CV and tell us when you can start.', mark: 'Join', href: '/connect#apply', cta: 'Apply now', accent: '#e39a2d',
+    })
+  }
+  if (featured[0]) {
+    feed.push({
+      key: 'project', tab: 'In focus', label: projectAreas[featured[0].area].label, title: featured[0].title,
+      text: featured[0].summary, mark: 'Now', href: `/projects#${featured[0].id}`, cta: 'Open project', accent: '#a9a3ff',
+    })
+  }
 
   return (
     <>
@@ -73,6 +111,9 @@ export default function HomePage() {
         .pi { display: grid; grid-template-columns: 220px 1fr; gap: 40px; align-items: center; padding: 36px; border-radius: var(--radius-lg); background: var(--indigo-soft); }
         .pi img { width: 220px; height: 260px; object-fit: cover; border-radius: var(--radius-md); }
 
+        .kcdh { display: grid; grid-template-columns: auto 1fr; gap: clamp(28px, 4vw, 64px); align-items: center; padding: clamp(24px, 3vw, 40px); border-radius: var(--radius-lg); background: #fff; border: 1px solid var(--line); }
+        .kcdh__logo img { height: clamp(64px, 7vw, 104px); width: auto; display: block; transition: transform .4s ease; }
+        .kcdh__logo:hover img { transform: scale(1.03); }
         .cta { position: relative; overflow: hidden; border-radius: 28px; padding: 64px; background: var(--indigo); color: #fff; display: grid; grid-template-columns: 1.4fr auto; gap: 32px; align-items: center; }
         .cta__rings { position: absolute; right: -120px; top: -120px; width: 420px; height: 420px; pointer-events: none; }
         .cta__rings circle { fill: none; stroke: rgba(255,255,255,.14); animation: ring 4s ease-out infinite; transform-origin: center; }
@@ -86,7 +127,7 @@ export default function HomePage() {
           .stat:nth-child(n+3) { border-top: 1px solid var(--line-dark); }
           .fp { grid-template-columns: 1fr; }
           .fp__lead { grid-row: auto; }
-          .pi { grid-template-columns: 1fr; }
+          .pi, .kcdh { grid-template-columns: 1fr; }
           .cta { grid-template-columns: 1fr; padding: 40px 28px; }
         }
       `}</style>
@@ -108,8 +149,7 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="hero__scope">
-                <SignalScope />
-                <p className="hero__hint">Move your pointer over the traces to probe them.</p>
+                <HeroFeed items={feed} />
               </div>
             </div>
           </div>
@@ -214,6 +254,24 @@ export default function HomePage() {
             </div>
           </section>
         )}
+
+        {/* ── HOME INSTITUTION ── */}
+        <section className="section--tight" style={{ paddingTop: 0 }}>
+          <div className="wrap">
+            <Reveal className="kcdh">
+              <a href="https://www.kcdh.iitb.ac.in" target="_blank" rel="noopener noreferrer" className="kcdh__logo">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/images/logos/kcdh-iitb.png" alt="Koita Centre for Digital Health and IIT Bombay logos" />
+              </a>
+              <div>
+                <p className="h3">Part of the Koita Centre for Digital Health, IIT Bombay</p>
+                <p className="muted" style={{ marginTop: 8, maxWidth: '58ch' }}>
+                  KCDH brings together engineers, clinicians and data scientists to build and deploy digital health tools for India.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </section>
 
         {/* ── COLLABORATORS ── */}
         <section className="section--tight" style={{ paddingTop: 0 }}>

@@ -8,7 +8,8 @@ import type { Person } from '@/content/people'
 const GROUPS: { label: string; plural: string; roles: Person['role'][] }[] = [
   { label: 'PhD', plural: 'PhD students', roles: ['PhD Student'] },
   { label: 'Masters', plural: 'Masters students', roles: ['Masters Student'] },
-  { label: 'Dual degree & UG', plural: 'Dual degree and undergraduate students', roles: ['IDDDP', 'Undergraduate'] },
+  { label: 'IDDDP', plural: 'IDDDP students', roles: ['IDDDP'] },
+  { label: 'Undergraduates', plural: 'Undergraduate students', roles: ['Undergraduate'] },
   { label: 'Staff', plural: 'Research and project staff', roles: ['Research Staff', 'Project Staff'] },
   { label: 'Alumni', plural: 'Alumni', roles: ['Alumni'] },
 ]
@@ -20,7 +21,7 @@ const ROLE_LABEL: Record<Person['role'], string> = {
   Undergraduate: 'Undergraduate',
   'Research Staff': 'Research staff',
   'Project Staff': 'Project staff',
-  IDDDP: 'Dual degree student',
+  IDDDP: 'IDDDP student',
   Alumni: 'Alumnus',
 }
 

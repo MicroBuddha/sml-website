@@ -75,7 +75,7 @@ export const projects: Project[] = [
       'A low-cost camera built to image the inside of the mouth consistently, so screening models get the same kind of picture every time.',
     how:
       'Electronics designed in-house: prototyping, PCB design, fabrication, testing and performance evaluation.',
-    team: ['Shiphi Abraham Thomas', 'Prof. Nirmal Punjabi'],
+    team: ['Prof. Nirmal Punjabi'],
     tags: ['Hardware', 'Imaging', 'PCB design'],
   },
   {
@@ -85,7 +85,7 @@ export const projects: Project[] = [
     status: 'ongoing',
     summary:
       'A handheld probe that measures the electrical impedance of oral tissue as an extra, non-visual signal for screening.',
-    team: ['Shiphi Abraham Thomas', 'Prof. Nirmal Punjabi'],
+    team: ['Prof. Nirmal Punjabi'],
     tags: ['Hardware', 'Bio-impedance'],
   },
   {
@@ -94,7 +94,7 @@ export const projects: Project[] = [
     area: 'wearables',
     status: 'ongoing',
     summary: 'A ring-sized wearable that tracks key physiological parameters continuously.',
-    team: ['Shiphi Abraham Thomas', 'Amrita Shirke'],
+    team: ['Amrita Shirke'],
     tags: ['Wearable', 'Low power'],
   },
   {

@@ -100,19 +100,20 @@ export const highlights: Highlight[] = [
 ]
 
 /* ── COLLABORATORS ──────────────────────────────────────────────────────── */
-// Shown as a dynamic, auto-scrolling ticker on the homepage. To add a partner,
-// just append an entry. `logo` and `url` are optional — if there's no logo the
-// ticker shows the name as text.
+// Shown as an auto-scrolling strip on the homepage.
+// TO ADD A PARTNER: append one line. `logo` and `url` are optional — with no
+// logo the strip shows the name as text. Logos go in /public/images/logos/.
+// TO REMOVE ONE: delete its line.
 export interface Collaborator {
   name: string
-  logo?: string // e.g. '/images/collaborators/iitb.png'
+  logo?: string // e.g. '/images/logos/nirdh.png'
   url?: string
 }
 
 export const collaborators: Collaborator[] = [
-  { name: 'Koita Centre for Digital Health', url: 'https://www.kcdh.iitb.ac.in' },
+  { name: 'Koita Centre for Digital Health, IIT Bombay', url: 'https://www.kcdh.iitb.ac.in' },
+  { name: 'ICMR – National Institute for Research in Digital Health and Data Science (NIRDH)' },
   { name: 'IIT Bombay', url: 'https://www.iitb.ac.in' },
-  { name: 'Tata Memorial Hospital' },
   { name: 'ASHA Community Health Workers' },
   { name: 'AIIMS' },
   { name: 'Wadhwani AI' },
@@ -120,38 +121,26 @@ export const collaborators: Collaborator[] = [
   { name: 'Rural Health Centres' },
 ]
 
-/* ── TESTIMONIALS ───────────────────────────────────────────────────────── */
-// Add or edit testimonials here; the homepage renders them in a responsive
-// grid. Keep quotes to a couple of sentences for the cleanest layout.
-export interface Testimonial {
-  quote: string
-  author: string
-  role: string
+/* ── NEWS / ANNOUNCEMENTS ───────────────────────────────────────────────── */
+// The homepage "What's new" panel cycles through these first, then adds the
+// latest paper, latest workshop, open internships and a featured project
+// automatically from the other content files.
+// Delete an item when it's out of date. `href` and `image` are optional.
+export interface NewsItem {
+  label: string // small tag, e.g. 'Announcement'
+  title: string
+  text?: string
+  href?: string
+  cta?: string // button text, e.g. 'Apply now'
+  image?: string // e.g. '/images/events/lab_photo.jpg'
 }
 
-export const testimonials: Testimonial[] = [
+export const news: NewsItem[] = [
   {
-    quote:
-      'The portable screening devices from the lab let our field workers ' +
-      'reach villages that had never had access to diagnostics before. The ' +
-      'impact on early detection has been remarkable.',
-    author: 'Community Health Coordinator',
-    role: 'Rural Health Programme',
-  },
-  {
-    quote:
-      'Working with the team bridged a real gap between engineering and the ' +
-      'clinic. Their edge-deployed models held up under conditions we ' +
-      'genuinely encounter in the field.',
-    author: 'Clinical Collaborator',
-    role: 'Partner Hospital',
-  },
-  {
-    quote:
-      'A rare group that takes a device all the way from a breadboard ' +
-      'prototype to a validated tool in a health worker\u2019s hands. That ' +
-      'end-to-end discipline is exactly what this space needs.',
-    author: 'Research Partner',
-    role: 'Digital Health Initiative',
+    label: 'Internships open',
+    title: 'Applications are open for lab internships',
+    text: 'Join live projects in bio-impedance hardware, oral lesion imaging, and language models for health.',
+    href: '/connect#apply',
+    cta: 'Apply now',
   },
 ]
