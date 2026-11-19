@@ -416,7 +416,7 @@ export default function FoundationPage() {
               hear from you.
             </p>
             <div className="fd-cta__actions">
-              <Link href="/contact" className="btn-light">Get in Touch</Link>
+              <Link href="/connect" className="btn-light">Get in Touch</Link>
               <Link href="/people" className="btn-outline-light">Meet the Team</Link>
             </div>
           </div>

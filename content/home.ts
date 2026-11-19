@@ -13,23 +13,14 @@
 // The big intro block at the top of the page. `titleLines` is rendered line by
 // line; wrap a word in {em: '...'} to give it the italic accent colour.
 export const hero = {
-  eyebrow: 'IIT Bombay · KCDH · Sensing & Monitoring Lab',
-  titleLines: [
-    { text: 'Building the future of' },
-    { em: 'digital health' },
-    { text: 'diagnostics.' },
-  ] as Array<{ text?: string; em?: string }>,
+  kicker: 'Koita Centre for Digital Health, IIT Bombay',
+  title: 'Sensors, signals and AI for screening beyond the clinic.',
   description:
     'We design end-to-end screening and diagnostic systems that bring ' +
     'clinical-grade sensing to the point of need — from remote villages to ' +
     'neonatal wards.',
-  primaryCta: { label: 'Our Research', href: '/research' },
-  secondaryCta: { label: 'Publications', href: '/publications' },
-  // Small stat chips on the PI card.
-  stats: [
-    { num: '5', label: 'Focus Areas' },
-    { num: '8+', label: 'Team Members' },
-  ],
+  primaryCta: { label: 'Explore our projects', href: '/projects' },
+  secondaryCta: { label: 'Apply for an internship', href: '/connect#apply' },
 }
 
 /* ── MISSION ────────────────────────────────────────────────────────────── */

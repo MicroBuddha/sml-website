@@ -459,7 +459,7 @@ export default function CoursePage() {
               opportunities with the lab.
             </p>
             <Link
-              href="/contact"
+              href="/connect"
               className="mt-9 inline-block rounded-[2px] bg-[#faf9f7] px-8 py-[13px] text-[13px] font-medium uppercase tracking-[0.06em] text-[#3c3489] no-underline transition-colors hover:bg-white"
             >
               Get in Touch

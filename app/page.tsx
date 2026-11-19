@@ -1,901 +1,250 @@
 import Link from 'next/link'
 import { people } from '@/content/people'
 import { events } from '@/content/events'
-import { hero, mission, highlights, collaborators, testimonials } from '@/content/home'
-import ImageCarousel from './components/ImageCarousel'
+import { publications } from '@/content/publications'
+import { projects, projectAreas } from '@/content/projects'
+import { hero, mission, highlights, collaborators } from '@/content/home'
+import SignalScope from './components/SignalScope'
+import Pipeline from './components/Pipeline'
 import Collaborators from './components/Collaborators'
-import Testimonials from './components/Testimonials'
+import Gallery from './components/Gallery'
+import Counter from './components/Counter'
+import Reveal from './components/Reveal'
+import Footer from './components/Footer'
 
 export default function HomePage() {
   const pi = people.find((p) => p.role === 'PI')
+  const featured = projects.filter((p) => p.featured).slice(0, 3)
+  const labPhotos = events.flatMap((e) => e.gallery ?? []).slice(0, 8)
+  const team = people.filter((p) => p.role !== 'Alumni').length
+  const workshops = events.filter((e) => e.category === 'workshop').length
+  const ongoing = projects.filter((p) => p.status === 'ongoing').length
 
-  // "Life in the Lab" strip — built dynamically from your events.
-  // Any event in content/events.ts that has a `gallery` or `coverImage` shows
-  // up here automatically. Add photos to an event and they appear on their own.
-  const recentEvents = [...events]
-    .filter((e) => (e.gallery && e.gallery.length > 0) || e.coverImage)
-    .sort((a, b) => {
-      if (!a.date) return 1
-      if (!b.date) return -1
-      return new Date(b.date).getTime() - new Date(a.date).getTime()
-    })
-    .slice(0, 6)
-
-  const labImages = recentEvents
-    .flatMap((e) => {
-      const imgs = e.gallery && e.gallery.length > 0 ? e.gallery : e.coverImage ? [e.coverImage] : []
-      return imgs.map((src) => ({
-        url: src as string,
-        alt: e.title,
-        caption: e.title,
-      }))
-    })
-    .slice(0, 8)
-
-  const researchAreas = [
-    {
-      icon: '◎',
-      title: 'Oral Health Diagnostics',
-      desc: 'AI-powered detection and classification of pre-cancerous oral lesions, caries, and gum disease using a portable multimodal sensing device with 360° rotation and swappable sensor heads.',
-    },
-    {
-      icon: '◈',
-      title: 'Non-invasive Screening',
-      desc: 'Hemoglobin and anemia estimation directly from mobile phone images — enabling mass screening in remote areas through ASHA workers without invasive procedures.',
-    },
-    {
-      icon: '◇',
-      title: 'Physiological Monitoring',
-      desc: 'Multi form-factor wearable devices (ring, glove, watch, patch, chest-strap) for continuous monitoring of HR, HRV, SpO₂, respiratory rate, blood pressure, and vascular stiffness.',
-    },
-    {
-      icon: '◉',
-      title: 'Acoustic Biomarkers',
-      desc: 'Machine learning models on speech and acoustic data for detection and progression tracking of neurodegenerative diseases, trained with limited-data protocols.',
-    },
-    {
-      icon: '◌',
-      title: 'Neonatal Monitoring',
-      desc: 'Non-contact height and weight estimation of neonates from images using simulated datasets and trained deep learning models — no physical constraints required.',
-    },
-    {
-      icon: '◍',
-      title: 'Edge & Emerging Work',
-      desc: 'Erythroblast differentiation for hematology, model deployment on edge devices, pressure sensor patches for bed-sore prevention, and cardiac acoustic monitoring.',
-    },
-  ]
+  const missionHtml = mission.quote.replace('{em}', '').replace('{/em}', '')
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap');
+        .hero { position: relative; overflow: hidden; padding: 140px 0 80px; min-height: 92vh; display: flex; align-items: center; }
+        .hero__glow { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .45; pointer-events: none; }
+        .hero__grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(40px, 5vw, 96px); align-items: center; }
+        .hero__title { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+        .hero__lede { animation: rise .9s .12s cubic-bezier(.2,.7,.2,1) both; }
+        .hero__ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; animation: rise .9s .24s cubic-bezier(.2,.7,.2,1) both; }
+        .hero__scope { animation: rise 1s .3s cubic-bezier(.2,.7,.2,1) both; }
+        .hero__hint { margin-top: 12px; font-size: .84rem; color: #8e8ab8; }
+        @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
 
-        .home {
-          position: relative;
-          font-family: 'DM Sans', sans-serif;
-          background: #faf9f7;
-          color: #1a1a1a;
-          overflow-x: clip;
-        }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line-dark); }
+        .stat { padding: 28px 24px 34px; }
+        .stat + .stat { border-left: 1px solid var(--line-dark); }
+        .stat__n { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.2rem, 4vw, 3.2rem); line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
+        .stat__l { margin-top: 8px; color: #b9b6dc; font-size: .95rem; }
+        .stat a { color: inherit; text-decoration: none; }
+        .stat a:hover .stat__n { color: var(--amber); }
 
-        /* ── AMBIENT BACKDROP ── subtle drifting glows + faint sensor grid,
-           sitting behind the hero. Kept low-opacity so it never competes
-           with the content. */
-        .home__ambient {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 760px;
-          overflow: hidden;
-          pointer-events: none;
-          z-index: -1;
-        }
-        .home__ambient::before,
-        .home__ambient::after {
-          content: '';
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(90px);
-        }
-        .home__ambient::before {
-          width: 640px;
-          height: 640px;
-          top: -200px;
-          left: -140px;
-          background: radial-gradient(circle, rgba(60,52,137,0.32), rgba(60,52,137,0) 70%);
-          animation: heroDrift1 28s ease-in-out infinite alternate;
-        }
-        .home__ambient::after {
-          width: 600px;
-          height: 600px;
-          top: -40px;
-          right: -180px;
-          background: radial-gradient(circle, rgba(133,79,11,0.26), rgba(133,79,11,0) 70%);
-          animation: heroDrift2 34s ease-in-out infinite alternate;
-        }
-        .home__grid {
-          position: absolute;
-          inset: 0;
-          background-image: radial-gradient(rgba(60,52,137,0.12) 1px, transparent 1px);
-          background-size: 26px 26px;
-          -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 76%);
-          mask-image: linear-gradient(180deg, #000 0%, transparent 76%);
-        }
-        @keyframes heroDrift1 {
-          from { transform: translate(0, 0); }
-          to   { transform: translate(70px, 46px); }
-        }
-        @keyframes heroDrift2 {
-          from { transform: translate(0, 0); }
-          to   { transform: translate(-56px, 34px); }
-        }
+        .mission { display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: start; }
+        .mission__quote { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.18; letter-spacing: -.02em; color: var(--ink); }
+        .mission p + p { margin-top: 14px; }
 
-        /* ── HERO ── */
-        .hero {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 96px 40px 80px;
-          display: grid;
-          grid-template-columns: 1fr 380px;
-          gap: 80px;
-          align-items: center;
-        }
-        .hero__eyebrow {
-          font-size: 11px;
-          font-weight: 500;
-          letter-spacing: 0.22em;
-          text-transform: uppercase;
-          color: #854f0b;
-          margin-bottom: 24px;
-        }
-        .hero__title {
-          font-family: 'EB Garamond', Georgia, serif;
-          font-size: clamp(44px, 6vw, 76px);
-          font-weight: 400;
-          line-height: 1.05;
-          letter-spacing: -0.02em;
-          color: #111;
-          margin: 0 0 28px;
-        }
-        .hero__title em {
-          font-style: italic;
-          color: #3c3489;
-        }
-        .hero__desc {
-          font-size: 16px;
-          line-height: 1.8;
-          color: #5a5249;
-          font-weight: 300;
-          max-width: 520px;
-          margin-bottom: 40px;
-        }
-        .hero__actions {
-          display: flex;
-          gap: 16px;
-          flex-wrap: wrap;
-        }
-        .btn-primary {
-          display: inline-block;
-          padding: 12px 28px;
-          background: #3c3489;
-          color: #fff;
-          font-size: 13px;
-          font-weight: 500;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          text-decoration: none;
-          border-radius: 2px;
-          transition: background 0.2s ease;
-        }
-        .btn-primary:hover { background: #26215c; }
-        .btn-ghost {
-          display: inline-block;
-          padding: 12px 28px;
-          border: 1px solid #ef9f27;
-          color: #5a5249;
-          font-size: 13px;
-          font-weight: 500;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          text-decoration: none;
-          border-radius: 2px;
-          transition: border-color 0.2s, color 0.2s;
-        }
-        .btn-ghost:hover { border-color: #3c3489; color: #3c3489; }
+        .sec-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 40px; flex-wrap: wrap; }
+        .link-arrow { color: var(--indigo); font-weight: 500; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+        .link-arrow:hover { color: var(--amber-deep); }
 
-        /* ── HERO CARD (PI) ── */
-        .hero__card {
-          background: #fff;
-          border: 1px solid #e8e3db;
-          border-radius: 4px;
-          padding: 36px;
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        }
-        .hero__card-avatar {
-          width: 72px;
-          height: 72px;
-          border-radius: 2px;
-          background: #ede8e0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-family: 'EB Garamond', Georgia, serif;
-          font-size: 28px;
-          color: #a09585;
-          flex-shrink: 0;
-        }
-        .hero__card-name {
-          font-family: 'EB Garamond', Georgia, serif;
-          font-size: 22px;
-          font-weight: 400;
-          color: #111;
-          margin: 0 0 2px;
-        }
-        .hero__card-role {
-          font-size: 10px;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: #9e8a67;
-          font-weight: 500;
-        }
-        .hero__card-divider {
-          height: 1px;
-          background: #e8e3db;
-        }
-        .hero__card-meta {
-          font-size: 13px;
-          color: #5a5249;
-          line-height: 1.7;
-          font-weight: 300;
-        }
-        .hero__card-meta a {
-          color: #3c3489;
-          text-decoration: none;
-          font-weight: 500;
-          border-bottom: 1px solid #cecbf6;
-          padding-bottom: 1px;
-          transition: border-color 0.2s;
-        }
-        .hero__card-meta a:hover { border-color: #3c3489; }
-        .hero__card-stat {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-        }
-        .hero__card-stat-item {
-          background: #faf9f7;
-          border: 1px solid #e8e3db;
-          border-radius: 2px;
-          padding: 14px;
-          text-align: center;
-        }
-        .hero__card-stat-num {
-          font-family: 'EB Garamond', Georgia, serif;
-          font-size: 28px;
-          font-weight: 400;
-          color: #3c3489;
-          line-height: 1;
-          display: block;
-        }
-        .hero__card-stat-label {
-          font-size: 10px;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: #9e8a67;
-          font-weight: 500;
-          margin-top: 4px;
-          display: block;
-        }
+        .fp { display: grid; grid-template-columns: 1.3fr 1fr; grid-template-rows: auto auto; gap: 18px; }
+        .fp__card { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; padding: 30px; border-radius: var(--radius-lg);
+          background: var(--card); border: 1px solid var(--line); text-decoration: none; color: inherit; overflow: hidden; transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s, border-color .35s; }
+        .fp__lead { grid-row: span 2; }
+        .fp__cell { display: flex; }
+        .fp__cell > a { flex: 1; }
+        .fp__card--lead { background: var(--ink); color: #ecebff; border-color: var(--ink); }
+        .fp__card--lead .muted { color: #b9b6dc; }
+        .fp__card:hover { transform: translateY(-4px); box-shadow: 0 24px 50px rgba(22,19,61,.14); border-color: var(--indigo); }
+        .fp__area { display: inline-flex; align-items: center; gap: 8px; font-size: .86rem; font-weight: 500; }
+        .fp__area i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .fp__title { font-family: var(--font-display); font-weight: 600; letter-spacing: -.02em; line-height: 1.12; font-size: 1.55rem; margin-top: 14px; }
+        .fp__card--lead .fp__title { font-size: clamp(1.9rem, 3vw, 2.5rem); }
+        .fp__trace { width: 100%; height: 90px; margin-top: auto; }
+        .fp__trace path { fill: none; stroke: var(--amber); stroke-width: 2; stroke-dasharray: 900; stroke-dashoffset: 900; transition: stroke-dashoffset 1.6s ease; }
+        .is-in .fp__trace path { stroke-dashoffset: 0; }
+        .fp__go { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; border: 1px solid currentColor; opacity: .6; transition: all .3s; }
+        .fp__card:hover .fp__go { opacity: 1; background: var(--amber); border-color: var(--amber); color: var(--ink); transform: rotate(-45deg); }
 
-        /* ── HERO ASIDE (card + live signal panel) ── */
-        .hero__aside {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
+        .pi { display: grid; grid-template-columns: 220px 1fr; gap: 40px; align-items: center; padding: 36px; border-radius: var(--radius-lg); background: var(--indigo-soft); }
+        .pi img { width: 220px; height: 260px; object-fit: cover; border-radius: var(--radius-md); }
 
-        /* ── LIVE SIGNAL PANEL ── an animated ECG-style trace that fills the
-           space under the PI card and nods to what the lab actually does:
-           continuous physiological monitoring. */
-        .hero__signal {
-          background: #fff;
-          border: 1px solid #e8e3db;
-          border-radius: 4px;
-          padding: 15px 18px 12px;
-          overflow: hidden;
-        }
-        .hero__signal-head {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 8px;
-        }
-        .hero__signal-label {
-          font-size: 10px;
-          font-weight: 500;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: #9e8a67;
-        }
-        .hero__signal-live {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 10px;
-          font-weight: 500;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: #3c3489;
-        }
-        .hero__signal-dot {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: #3c3489;
-          animation: pulseDot 1.6s ease-in-out infinite;
-        }
-        @keyframes pulseDot {
-          0%, 100% { opacity: 0.3; transform: scale(0.8); }
-          50%      { opacity: 1;   transform: scale(1.15); }
-        }
-        .hero__signal-wave {
-          display: block;
-          width: 100%;
-          height: 44px;
-        }
-        .hero__signal-trace {
-          transform-box: view-box;
-          transform-origin: 0 0;
-          animation: ecgScroll 3.2s linear infinite;
-        }
-        @keyframes ecgScroll {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-120px); }
-        }
+        .cta { position: relative; overflow: hidden; border-radius: 28px; padding: 64px; background: var(--indigo); color: #fff; display: grid; grid-template-columns: 1.4fr auto; gap: 32px; align-items: center; }
+        .cta__rings { position: absolute; right: -120px; top: -120px; width: 420px; height: 420px; pointer-events: none; }
+        .cta__rings circle { fill: none; stroke: rgba(255,255,255,.14); animation: ring 4s ease-out infinite; transform-origin: center; }
+        .cta__rings circle:nth-child(2) { animation-delay: 1.3s; } .cta__rings circle:nth-child(3) { animation-delay: 2.6s; }
+        @keyframes ring { from { transform: scale(.3); opacity: 1; } to { transform: scale(1); opacity: 0; } }
 
-        @media (prefers-reduced-motion: reduce) {
-          .home__ambient::before,
-          .home__ambient::after,
-          .hero__signal-trace,
-          .hero__signal-dot { animation: none; }
-        }
-
-        /* ── DIVIDER ── */
-        .section-divider {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 0 40px;
-          display: flex;
-          align-items: center;
-          gap: 24px;
-        }
-        .section-divider__label {
-          font-size: 11px;
-          font-weight: 500;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          color: #9e8a67;
-          white-space: nowrap;
-        }
-        .section-divider__line {
-          flex: 1;
-          height: 1px;
-          background: #e5e0d8;
-        }
-
-        /* ── MISSION ── */
-        .mission {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 72px 40px;
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 80px;
-          align-items: center;
-        }
-        .mission__quote {
-          font-family: 'EB Garamond', Georgia, serif;
-          font-size: clamp(26px, 3vw, 36px);
-          font-weight: 400;
-          line-height: 1.45;
-          color: #111;
-          letter-spacing: -0.01em;
-          position: relative;
-          padding-left: 28px;
-        }
-        .mission__quote::before {
-          content: '';
-          position: absolute;
-          left: 0; top: 4px; bottom: 4px;
-          width: 2px;
-          background: #3c3489;
-          border-radius: 2px;
-        }
-        .mission__quote em { font-style: italic; color: #3c3489; }
-        .mission__body {
-          font-size: 15px;
-          line-height: 1.85;
-          color: #5a5249;
-          font-weight: 300;
-        }
-        .mission__body p { margin: 0 0 16px; }
-        .mission__body p:last-child { margin: 0; }
-
-        /* ── RESEARCH GRID ── */
-        .research {
-          background: #fff;
-          border-top: 1px solid #e5e0d8;
-          border-bottom: 1px solid #e5e0d8;
-          padding: 80px 0;
-        }
-        .research__inner {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 0 40px;
-        }
-        .research__header {
-          margin-bottom: 56px;
-        }
-        .research__title {
-          font-family: 'EB Garamond', Georgia, serif;
-          font-size: 40px;
-          font-weight: 400;
-          color: #111;
-          margin: 12px 0 0;
-          letter-spacing: -0.01em;
-        }
-        .research__grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 2px;
-        }
-        .research__card {
-          padding: 36px 32px;
-          border: 1px solid #e8e3db;
-          position: relative;
-          transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-          text-decoration: none;
-          display: block;
-        }
-        .research__card::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 2px;
-          background: linear-gradient(90deg, #3c3489, #7f77dd);
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.3s ease;
-        }
-        .research__card:hover::before { transform: scaleX(1); }
-        .research__card:hover {
-          background: #fdfcfa;
-          transform: translateY(-2px);
-          box-shadow: 0 12px 32px rgba(0,0,0,0.06);
-        }
-        .research__card-icon {
-          font-size: 20px;
-          color: #3c3489;
-          margin-bottom: 16px;
-          display: block;
-          opacity: 0.7;
-        }
-        .research__card-title {
-          font-family: 'EB Garamond', Georgia, serif;
-          font-size: 20px;
-          font-weight: 400;
-          color: #111;
-          margin: 0 0 12px;
-          line-height: 1.2;
-        }
-        .research__card-desc {
-          font-size: 13.5px;
-          line-height: 1.75;
-          color: #5a5249;
-          font-weight: 300;
-        }
-
-        /* ── HIGHLIGHTS ── */
-        .highlights {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 80px 40px;
-        }
-        .highlights__header {
-          margin-bottom: 48px;
-        }
-        .highlights__title {
-          font-family: 'EB Garamond', Georgia, serif;
-          font-size: 40px;
-          font-weight: 400;
-          color: #111;
-          margin: 12px 0 0;
-          letter-spacing: -0.01em;
-        }
-        .highlights__list {
-          display: flex;
-          flex-direction: column;
-          gap: 0;
-          border: 1px solid #e8e3db;
-        }
-        .highlight__item {
-          display: grid;
-          grid-template-columns: 56px 1fr auto;
-          align-items: center;
-          gap: 24px;
-          padding: 28px 32px;
-          border-bottom: 1px solid #e8e3db;
-          transition: background 0.2s;
-        }
-        .highlight__item:last-child { border-bottom: none; }
-        .highlight__item:hover { background: #fdfcfa; }
-        .highlight__num {
-          font-family: 'EB Garamond', Georgia, serif;
-          font-size: 32px;
-          font-weight: 400;
-          color: #e0dbd3;
-          line-height: 1;
-          text-align: center;
-        }
-        .highlight__text {
-          font-size: 14px;
-          line-height: 1.7;
-          color: #4a4540;
-          font-weight: 300;
-        }
-        .highlight__text strong {
-          font-weight: 500;
-          color: #111;
-          font-size: 15px;
-          display: block;
-          margin-bottom: 2px;
-        }
-        .highlight__tag {
-          font-size: 10px;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: #854f0b;
-          font-weight: 500;
-          background: #f0ece5;
-          padding: 4px 10px;
-          border-radius: 2px;
-          white-space: nowrap;
-        }
-
-        /* ── LIFE IN THE LAB ── */
-        .lab-strip {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 72px 40px 88px;
-        }
-        .lab-strip__header { margin-bottom: 32px; }
-        .lab-strip__grid {
-          max-width: 760px;
-        }
-
-        /* ── CTA ── */
-        .cta {
-          background: #3c3489;
-          padding: 80px 40px;
-          text-align: center;
-        }
-        .cta__inner { max-width: 600px; margin: 0 auto; }
-        .cta__title {
-          font-family: 'EB Garamond', Georgia, serif;
-          font-size: clamp(32px, 4vw, 48px);
-          font-weight: 400;
-          color: #fff;
-          margin: 0 0 16px;
-          letter-spacing: -0.01em;
-          line-height: 1.15;
-        }
-        .cta__title em { font-style: italic; opacity: 0.75; }
-        .cta__sub {
-          font-size: 15px;
-          color: #cecbf6;
-          font-weight: 300;
-          line-height: 1.7;
-          margin-bottom: 36px;
-        }
-        .btn-light {
-          display: inline-block;
-          padding: 13px 32px;
-          background: #faf9f7;
-          color: #3c3489;
-          font-size: 13px;
-          font-weight: 500;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          text-decoration: none;
-          border-radius: 2px;
-          transition: background 0.2s;
-        }
-        .btn-light:hover { background: #fff; }
-
-        /* ── FOOTER ── */
-        .footer {
-          border-top: 1px solid #e5e0d8;
-          padding: 32px 40px;
-          max-width: 1100px;
-          margin: 0 auto;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .footer__left {
-          font-family: 'EB Garamond', Georgia, serif;
-          font-size: 16px;
-          color: #854f0b;
-        }
-        .footer__right {
-          font-size: 12px;
-          color: #9e8a67;
-          letter-spacing: 0.04em;
-        }
-        .footer__right a {
-          color: #854f0b;
-          text-decoration: none;
-          transition: color 0.2s;
-        }
-        .footer__right a:hover { color: #3c3489; }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 900px) {
-          .hero { grid-template-columns: 1fr; gap: 48px; }
-          .hero__aside { max-width: 400px; }
-          .mission { grid-template-columns: 1fr; gap: 40px; }
-          .research__grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 600px) {
-          .hero, .mission, .research__inner, .highlights, .section-divider { padding-left: 24px; padding-right: 24px; }
-          .research__grid { grid-template-columns: 1fr; }
-          .highlight__item { grid-template-columns: 40px 1fr; }
-          .highlight__tag { display: none; }
-          .footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
+        @media (max-width: 960px) {
+          .hero__grid, .mission { grid-template-columns: 1fr; gap: 40px; }
+          .stats { grid-template-columns: 1fr 1fr; }
+          .stat:nth-child(3) { border-left: 0; }
+          .stat:nth-child(n+3) { border-top: 1px solid var(--line-dark); }
+          .fp { grid-template-columns: 1fr; }
+          .fp__lead { grid-row: auto; }
+          .pi { grid-template-columns: 1fr; }
+          .cta { grid-template-columns: 1fr; padding: 40px 28px; }
         }
       `}</style>
 
-      <div className="home">
-        <div className="home__ambient" aria-hidden="true">
-          <div className="home__grid" />
-        </div>
-
+      <main>
         {/* ── HERO ── */}
-        <section className="hero">
-          <div>
-            <p className="hero__eyebrow">{hero.eyebrow}</p>
-            <h1 className="hero__title">
-              {hero.titleLines.map((line, i) => (
-                <span key={i}>
-                  {line.em ? <em>{line.em}</em> : line.text}
-                  {i < hero.titleLines.length - 1 && <br />}
-                </span>
-              ))}
-            </h1>
-            <p className="hero__desc">{hero.description}</p>
-            <div className="hero__actions">
-              <Link href={hero.primaryCta.href} className="btn-primary">{hero.primaryCta.label}</Link>
-              <Link href={hero.secondaryCta.href} className="btn-ghost">{hero.secondaryCta.label}</Link>
-            </div>
-          </div>
-
-          {/* ASIDE — PI card + live signal panel */}
-          <div className="hero__aside">
-          <div className="hero__card">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              {pi?.photo ? (
-                <img
-                  src={pi.photo}
-                  alt={pi.name}
-                  style={{ width: '72px', height: '72px', borderRadius: '2px', objectFit: 'cover', flexShrink: 0 }}
-                />
-              ) : (
-                <div className="hero__card-avatar">N</div>
-              )}
+        <section className="hero dark">
+          <div className="hero__glow" style={{ width: 520, height: 520, background: '#3c3489', left: -160, top: -120 }} />
+          <div className="hero__glow" style={{ width: 380, height: 380, background: '#854f0b', right: -100, bottom: -80, opacity: 0.3 }} />
+          <div className="wrap" style={{ position: 'relative', width: '100%' }}>
+            <div className="hero__grid">
               <div>
-                <p className="hero__card-name">{pi?.name ?? 'Prof. Nirmal Punjabi'}</p>
-                <p className="hero__card-role">Principal Investigator</p>
+                <p className="kicker" style={{ marginBottom: 18 }}>{hero.kicker}</p>
+                <h1 className="display hero__title">{hero.title}</h1>
+                <p className="lede muted hero__lede" style={{ marginTop: 24 }}>{hero.description}</p>
+                <div className="hero__ctas">
+                  <Link href={hero.primaryCta.href} className="btn btn--amber">{hero.primaryCta.label}</Link>
+                  <Link href={hero.secondaryCta.href} className="btn btn--ghost">{hero.secondaryCta.label}</Link>
+                </div>
+              </div>
+              <div className="hero__scope">
+                <SignalScope />
+                <p className="hero__hint">Move your pointer over the traces to probe them.</p>
               </div>
             </div>
-            <div className="hero__card-divider" />
-            <div className="hero__card-meta">
-              Koita Centre for Digital Health<br />
-              IIT Bombay, Mumbai<br /><br />
-              <a href="mailto:npunjabi@iitb.ac.in">npunjabi@iitb.ac.in</a>
-              &ensp;·&ensp;
-              <a href="https://www.linkedin.com/in/npunjabi108/" target="_blank" rel="noreferrer">LinkedIn</a>
-              &ensp;·&ensp;
-              <a href="https://scholar.google.com/citations?hl=en&user=86tKGf8AAAAJ" target="_blank" rel="noreferrer">Scholar</a>
-            </div>
-            <div className="hero__card-stat">
-              {hero.stats.map((s) => (
-                <div key={s.label} className="hero__card-stat-item">
-                  <span className="hero__card-stat-num">{s.num}</span>
-                  <span className="hero__card-stat-label">{s.label}</span>
-                </div>
-              ))}
-            </div>
           </div>
+        </section>
 
-          {/* LIVE SIGNAL PANEL */}
-          <div className="hero__signal">
-            <div className="hero__signal-head">
-              <span className="hero__signal-label">Continuous signal monitoring</span>
-              <span className="hero__signal-live">
-                <span className="hero__signal-dot" />
-                Live
-              </span>
+        {/* ── NUMBERS (all counted from the content files) ── */}
+        <section className="dark">
+          <div className="wrap">
+            <div className="stats">
+              <div className="stat"><Link href="/projects"><div className="stat__n"><Counter value={ongoing} /></div><div className="stat__l">ongoing projects</div></Link></div>
+              <div className="stat"><Link href="/people"><div className="stat__n"><Counter value={team} /></div><div className="stat__l">researchers and staff</div></Link></div>
+              <div className="stat"><Link href="/publications"><div className="stat__n"><Counter value={publications.length} /></div><div className="stat__l">publications</div></Link></div>
+              <div className="stat"><Link href="/outreach"><div className="stat__n"><Counter value={workshops} /></div><div className="stat__l">workshops taught</div></Link></div>
             </div>
-            <svg
-              className="hero__signal-wave"
-              viewBox="0 0 300 48"
-              preserveAspectRatio="none"
-              fill="none"
-              aria-hidden="true"
-            >
-              <g className="hero__signal-trace">
-                <path
-                  d="M0,24 L60,24 L66,24 L72,8 L78,40 L84,20 L92,24 L120,24 L180,24 L186,24 L192,8 L198,40 L204,20 L212,24 L240,24 L300,24 L306,24 L312,8 L318,40 L324,20 L332,24 L360,24 L420,24 L426,24 L432,8 L438,40 L444,20 L452,24 L480,24 L540,24 L546,24 L552,8 L558,40 L564,20 L572,24 L600,24"
-                  stroke="#3c3489"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  opacity="0.55"
-                />
-              </g>
-            </svg>
-          </div>
           </div>
         </section>
 
         {/* ── MISSION ── */}
-        <div className="section-divider">
-          <span className="section-divider__label">Mission</span>
-          <div className="section-divider__line" />
-        </div>
-
-        <section className="mission">
-          <blockquote className="mission__quote">
-            {mission.quote.split(/\{em\}|\{\/em\}/).map((part, i) =>
-              i % 2 === 1 ? <em key={i}>{part}</em> : part
-            )}
-          </blockquote>
-          <div className="mission__body">
-            {mission.paragraphs.map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
+        <section className="section">
+          <div className="wrap mission">
+            <Reveal><p className="mission__quote">{missionHtml}</p></Reveal>
+            <Reveal delay={120} className="muted">
+              {mission.paragraphs.map((p) => <p key={p.slice(0, 20)}>{p}</p>)}
+            </Reveal>
           </div>
         </section>
 
-        {/* ── RESEARCH AREAS ── */}
-        <div className="section-divider">
-          <span className="section-divider__label">Research Areas</span>
-          <div className="section-divider__line" />
-        </div>
-
-        <section className="research">
-          <div className="research__inner">
-            <div className="research__header">
-              <p style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#854f0b', margin: '0 0 12px' }}>What we work on</p>
-              <h2 className="research__title">Six domains, one goal.</h2>
-            </div>
-            <div className="research__grid">
-              {researchAreas.map((area) => (
-                <div key={area.title} className="research__card">
-                  <span className="research__card-icon">{area.icon}</span>
-                  <h3 className="research__card-title">{area.title}</h3>
-                  <p className="research__card-desc">{area.desc}</p>
-                </div>
-              ))}
-            </div>
+        {/* ── PIPELINE ── */}
+        <section className="section" style={{ paddingTop: 0 }}>
+          <div className="wrap">
+            <Reveal className="sec-head">
+              <h2 className="h2" style={{ maxWidth: '20ch' }}>From a sensor on the bench to a tool in the field</h2>
+            </Reveal>
+            <Reveal><Pipeline stages={highlights} /></Reveal>
           </div>
         </section>
 
-        {/* ── PROJECT HIGHLIGHTS ── */}
-        <div className="section-divider" style={{ marginTop: '0', paddingTop: '80px' }}>
-          <span className="section-divider__label">Project Highlights</span>
-          <div className="section-divider__line" />
-        </div>
-
-        <section className="highlights">
-          <div className="highlights__header">
-            <p style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#854f0b', margin: '0 0 12px' }}>What we focus on</p>
-            <h2 className="highlights__title">From sensing to deployment.</h2>
-          </div>
-          <div className="highlights__list">
-            {highlights.map((item, i) => (
-              <div key={item.title} className="highlight__item">
-                <span className="highlight__num">0{i + 1}</span>
-                <div className="highlight__text">
-                  <strong>
-                    <span aria-hidden="true" style={{ color: '#3c3489', marginRight: '10px', opacity: 0.7 }}>{item.icon}</span>
-                    {item.title}
-                  </strong>
-                  {item.desc}
-                </div>
-                <span className="highlight__tag">{item.tag}</span>
+        {/* ── FEATURED PROJECTS ── */}
+        {featured.length > 0 && (
+          <section className="section" style={{ paddingTop: 0 }}>
+            <div className="wrap">
+              <Reveal className="sec-head">
+                <h2 className="h2">What we&apos;re working on</h2>
+                <Link href="/projects" className="link-arrow">All {projects.length} projects</Link>
+              </Reveal>
+              <div className="fp">
+                {featured.map((p, i) => {
+                  const area = projectAreas[p.area]
+                  return (
+                    <Reveal key={p.id} delay={i * 90} className={`fp__cell${i === 0 ? ' fp__lead' : ''}`}>
+                      <Link href={`/projects#${p.id}`} className={`fp__card${i === 0 ? ' fp__card--lead' : ''}`}>
+                        <div>
+                          <span className="fp__area"><i style={{ background: i === 0 ? 'var(--amber)' : area.color }} />{area.label}</span>
+                          <p className="fp__title">{p.title}</p>
+                          <p className="muted" style={{ marginTop: 12, maxWidth: '48ch' }}>{p.summary}</p>
+                        </div>
+                        {i === 0 && (
+                          <svg className="fp__trace" viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true">
+                            <path d="M0 60 H70 l8 -6 l8 6 H120 l6 10 l9 -62 l9 70 l7 -18 H190 q22 -20 44 0 H270 l8 -6 l8 6 H320 l6 10 l9 -62 l9 70 l7 -18 H400" />
+                          </svg>
+                        )}
+                        <span className="fp__go" aria-hidden="true">→</span>
+                      </Link>
+                    </Reveal>
+                  )
+                })}
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
+          </section>
+        )}
+
+        {/* ── PI ── */}
+        {pi && (
+          <section className="section" style={{ paddingTop: 0 }}>
+            <div className="wrap">
+              <Reveal className="pi">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {pi.photo && <img src={pi.photo} alt={pi.name} />}
+                <div>
+                  <p className="kicker">Principal investigator</p>
+                  <p className="h2" style={{ marginTop: 6 }}>{pi.name}</p>
+                  {pi.bio && <p className="muted" style={{ marginTop: 14, maxWidth: '60ch' }}>{pi.bio}</p>}
+                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 22 }}>
+                    <Link href="/people" className="btn btn--indigo">Meet the team</Link>
+                    {pi.googleScholar && <a href={pi.googleScholar} target="_blank" rel="noopener noreferrer" className="btn btn--outline">Google Scholar</a>}
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+          </section>
+        )}
 
         {/* ── LIFE IN THE LAB ── */}
-        <div className="section-divider">
-          <span className="section-divider__label">Life in the Lab</span>
-          <div className="section-divider__line" />
-        </div>
-
-        <section className="lab-strip">
-          <div className="lab-strip__header">
-            <p style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#854f0b', margin: '0 0 12px' }}>Workshops & events</p>
-            <h2 className="highlights__title" style={{ margin: 0 }}>Snapshots from the lab.</h2>
-          </div>
-          <div className="lab-strip__grid">
-            <ImageCarousel
-              images={labImages}
-              placeholderLabel="Lab & workshop photos coming soon"
-              aspectRatio="16 / 9"
-            />
-          </div>
-          <div style={{ marginTop: '24px' }}>
-            <Link href="/workshops-events" className="btn-ghost">Workshops & Events</Link>
-          </div>
-        </section>
+        {labPhotos.length > 0 && (
+          <section className="section" style={{ paddingTop: 0 }}>
+            <div className="wrap">
+              <Reveal className="sec-head">
+                <h2 className="h2">Life in the lab</h2>
+                <Link href="/outreach" className="link-arrow">Workshops and events</Link>
+              </Reveal>
+              <Reveal><Gallery images={labPhotos} /></Reveal>
+            </div>
+          </section>
+        )}
 
         {/* ── COLLABORATORS ── */}
-        <div className="section-divider">
-          <span className="section-divider__label">Collaborators</span>
-          <div className="section-divider__line" />
-        </div>
-
-        <section className="highlights" style={{ paddingBottom: '40px' }}>
-          <div className="highlights__header" style={{ marginBottom: '32px' }}>
-            <p style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#854f0b', margin: '0 0 12px' }}>Who we work with</p>
-            <h2 className="highlights__title" style={{ margin: 0 }}>Partners &amp; collaborators.</h2>
+        <section className="section--tight" style={{ paddingTop: 0 }}>
+          <div className="wrap">
+            <Reveal><p className="h3" style={{ marginBottom: 22 }}>We work with</p></Reveal>
           </div>
           <Collaborators items={collaborators} />
         </section>
 
-        {/* ── TESTIMONIALS ── */}
-        <div className="section-divider">
-          <span className="section-divider__label">Testimonials</span>
-          <div className="section-divider__line" />
-        </div>
-
-        <section className="highlights">
-          <div className="highlights__header">
-            <p style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#854f0b', margin: '0 0 12px' }}>In their words</p>
-            <h2 className="highlights__title">What partners say.</h2>
-          </div>
-          <Testimonials items={testimonials} />
-        </section>
-
         {/* ── CTA ── */}
-        <section className="cta">
-          <div className="cta__inner">
-            <h2 className="cta__title">Interested in <em>collaborating</em> or joining the lab?</h2>
-            <p className="cta__sub">
-              We welcome project collaborations, internship enquiries, and prospective PhD and Masters students with a passion for digital health.
-            </p>
-            <Link href="/contact" className="btn-light">Get in Touch</Link>
+        <section className="section">
+          <div className="wrap">
+            <Reveal className="cta">
+              <svg className="cta__rings" viewBox="0 0 420 420" aria-hidden="true">
+                <circle cx="210" cy="210" r="200" /><circle cx="210" cy="210" r="200" /><circle cx="210" cy="210" r="200" />
+              </svg>
+              <div style={{ position: 'relative' }}>
+                <h2 className="h2">Build health tech that leaves the lab.</h2>
+                <p style={{ marginTop: 14, color: '#d9d7f5', maxWidth: '52ch' }}>
+                  We take interns, thesis students and collaborators. Send your details and CV in a couple of minutes.
+                </p>
+              </div>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', position: 'relative' }}>
+                <Link href="/connect#apply" className="btn btn--amber">Apply for an internship</Link>
+                <Link href="/connect" className="btn btn--ghost">Get in touch</Link>
+              </div>
+            </Reveal>
           </div>
         </section>
-
-        {/* ── FOOTER ── */}
-        <footer className="footer">
-          <span className="footer__left">Sensing & Monitoring Lab, KCDH</span>
-          <span className="footer__right">
-            IIT Bombay &nbsp;·&nbsp;{' '}
-            <a href="https://www.kcdh.iitb.ac.in" target="_blank" rel="noreferrer">kcdh.iitb.ac.in</a>
-            &nbsp;·&nbsp;{' '}
-            <a href="mailto:npunjabi@iitb.ac.in">npunjabi@iitb.ac.in</a>
-          </span>
-        </footer>
-
-      </div>
+      </main>
+      <Footer />
     </>
   )
 }

@@ -1,13 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 @import "tailwindcss/preflight";
 @import "tailwindcss/utilities";
 
+/* ─────────────────────────────────────────────────────────────────────────
+   SML DESIGN TOKENS
+   Change colours / fonts here and the whole site follows.
+   ───────────────────────────────────────────────────────────────────────── */
 :root {
-  --background: #faf9f7;
-  --foreground: #1a1a1a;
+  --ink: #16133d;          /* dark "instrument" sections */
+  --ink-2: #221e55;        /* raised surfaces on dark */
+  --indigo: #3c3489;       /* brand primary */
+  --indigo-soft: #e9e7fb;
+  --lavender: #a9a3ff;     /* ECG trace, accents on dark */
+  --amber: #e39a2d;        /* PPG trace, accents on dark */
+  --amber-deep: #854f0b;   /* amber text on light */
+  --paper: #f6f6f9;        /* page background */
+  --card: #ffffff;
+  --text: #24223a;
+  --muted: #5d5a73;
+  --line: #e0dfea;
+  --line-dark: rgba(169, 163, 255, 0.18);
+
+  --font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --max: 1480px;          /* widest the content gets on big screens */
+  --gutter: clamp(20px, 4vw, 72px); /* side padding, grows with the screen */
+
+  --background: var(--paper);
+  --foreground: var(--text);
 }
 
-
+html { scroll-behavior: smooth; }
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16.5px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--lavender); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 4px; }
+
+/* ── LAYOUT ─────────────────────────────────────────────────────────────── */
+.wrap { max-width: calc(var(--max) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
+.section { padding: 96px 0; }
+.section--tight { padding: 64px 0; }
+.dark { background: var(--ink); color: #ecebff; }
+.dark .muted { color: #b9b6dc; }
+.muted { color: var(--muted); }
+
+/* ── TYPE ───────────────────────────────────────────────────────────────── */
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  font-size: clamp(2.6rem, 5.4vw, 5.6rem);
+}
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+}
+.h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  font-size: 1.3rem;
+}
+.lede { font-size: clamp(1.08rem, 1.1vw, 1.25rem); max-width: 62ch; }
+.kicker { font-size: 0.92rem; color: var(--amber-deep); font-weight: 500; }
+.dark .kicker { color: var(--amber); }
+
+/* ── BUTTONS ────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 13px 22px; border-radius: 999px;
+  font-weight: 500; font-size: 0.98rem; text-decoration: none;
+  border: 1px solid transparent; cursor: pointer;
+  transition: transform .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+.btn--amber { background: var(--amber); color: var(--ink); }
+.btn--amber:hover { background: #f1ad47; }
+.btn--indigo { background: var(--indigo); color: #fff; }
+.btn--indigo:hover { background: #4a41a6; }
+.btn--ghost { border-color: rgba(236, 235, 255, .35); color: #ecebff; }
+.btn--ghost:hover { border-color: var(--lavender); color: #fff; }
+.btn--outline { border-color: var(--line); color: var(--text); background: var(--card); }
+.btn--outline:hover { border-color: var(--indigo); color: var(--indigo); }
+.btn[disabled] { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* ── CHIPS ──────────────────────────────────────────────────────────────── */
+.chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 14px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--card);
+  font-size: 0.88rem; color: var(--muted); cursor: pointer;
+  transition: all .2s ease;
+}
+.chip:hover { border-color: var(--indigo); color: var(--indigo); }
+.chip[aria-pressed="true"] { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+.chip__count { font-size: .78rem; opacity: .7; }
+.tag {
+  display: inline-block; font-size: .78rem; padding: 3px 10px; border-radius: 999px;
+  background: var(--indigo-soft); color: var(--indigo);
+}
+
+/* ── SEGMENTED TOGGLE ─────────────────────────────────────────────────── */
+.seg { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
+.seg button { font: inherit; font-size: .88rem; border: 0; background: none; padding: 7px 14px; border-radius: 999px; cursor: pointer; color: var(--muted); transition: all .2s; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+
+/* ── PAGE HEADER (dark band with a faint trace) ─────────────────────────── */
+.page-head { position: relative; overflow: hidden; padding: 150px 0 128px; }
+.page-head__trace { position: absolute; inset: auto 0 0 0; height: 96px; opacity: .55; pointer-events: none; }
+.page-head__trace path { fill: none; stroke-width: 1.6; stroke-dasharray: 5000; stroke-dashoffset: 5000; animation: draw 2.6s ease-out forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* ── REVEAL ─────────────────────────────────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+.reveal.is-in { opacity: 1; transform: none; }
+
+/* ── OVERLAYS (drawer + modal) ──────────────────────────────────────────── */
+.scrim { position: fixed; inset: 0; background: rgba(22, 19, 61, .55); backdrop-filter: blur(4px); z-index: 200; animation: fade .25s ease; }
+@keyframes fade { from { opacity: 0; } }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(620px, 100vw);
+  background: var(--card); z-index: 201; overflow-y: auto;
+  box-shadow: -30px 0 60px rgba(22,19,61,.25);
+  animation: slideIn .35s cubic-bezier(.2,.7,.2,1);
+}
+@keyframes slideIn { from { transform: translateX(100%); } }
+.modal {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(760px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow-y: auto;
+  background: var(--card); border-radius: var(--radius-lg); z-index: 201;
+  animation: pop .3s cubic-bezier(.2,.7,.2,1);
+}
+@keyframes pop { from { opacity: 0; transform: translate(-50%, -46%) scale(.97); } }
+.close-btn {
+  position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--card); cursor: pointer; font-size: 20px; line-height: 1;
+  color: var(--text);
+}
+.close-btn:hover { border-color: var(--indigo); color: var(--indigo); }
+
+/* ── MARQUEE ────────────────────────────────────────────────────────────── */
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* ── FORMS ──────────────────────────────────────────────────────────────── */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: .9rem; font-weight: 500; }
+.field input, .field select, .field textarea {
+  font: inherit; font-size: .98rem; padding: 12px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--line); background: #fff; color: var(--text);
+  transition: border-color .2s, box-shadow .2s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--indigo); box-shadow: 0 0 0 4px var(--indigo-soft);
+}
+.field__hint { font-size: .82rem; color: var(--muted); }
+.field__error { font-size: .82rem; color: #b42318; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+@media (max-width: 720px) {
+  .section { padding: 68px 0; }
+  .page-head { padding: 120px 0 104px; }
 }

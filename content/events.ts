@@ -1,4 +1,4 @@
-// Workshops, events, and achievements shown on the /workshops-events page,
+// Workshops, events, and achievements shown on the /outreach page,
 // and the "Life in the Lab" strip on the homepage (pulled from `gallery`/`coverImage`).
 //
 // `gallery`: put photos in /public/images/events/ and list their paths — if

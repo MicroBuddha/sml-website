@@ -1,92 +1,42 @@
-'use client'
-
 import type { Collaborator } from '@/content/home'
 
-interface CollaboratorsProps {
-  items: Collaborator[]
-  /** seconds for one full loop — higher is slower */
-  durationSec?: number
-}
-
 /**
- * A dynamic, auto-scrolling ticker of collaborator names/logos.
- *
- * Entries come from `content/home.ts` (the `collaborators` array), so adding a
- * new partner is as simple as appending to that array — no changes needed here.
- * The list is rendered twice back-to-back and translated by -50% so the loop is
- * seamless. Hovering pauses the scroll.
+ * Auto-scrolling strip of partner names/logos (from content/home.ts).
+ * The list is rendered twice and shifted by -50% for a seamless loop.
+ * Hover pauses it.
  */
-export default function Collaborators({ items, durationSec = 32 }: CollaboratorsProps) {
-  if (!items || items.length === 0) return null
-
-  // Duplicate the list so the marquee can loop without a visible seam.
+export default function Collaborators({ items, durationSec = 38 }: { items: Collaborator[]; durationSec?: number }) {
+  if (!items?.length) return null
   const loop = [...items, ...items]
-
   return (
-    <>
+    <div className="mq">
       <style>{`
-        @keyframes collab-scroll {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
+        .mq { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+        .mq__row { display: flex; width: max-content; gap: 14px; animation: marquee ${durationSec}s linear infinite; }
+        .mq:hover .mq__row { animation-play-state: paused; }
+        .mq__item { display: inline-flex; align-items: center; gap: 12px; padding: 14px 24px; border-radius: 999px; border: 1px solid var(--line); background: var(--card);
+          font-family: var(--font-display); font-weight: 500; font-size: 1.05rem; color: var(--text); text-decoration: none; white-space: nowrap; transition: border-color .2s, color .2s; }
+        a.mq__item:hover { border-color: var(--indigo); color: var(--indigo); }
+        .mq__item img { height: 26px; width: auto; }
       `}</style>
-
-      <div
-        className="group relative w-full overflow-hidden py-2"
-        style={{
-          // Fade the edges so items appear/disappear gently.
-          WebkitMaskImage:
-            'linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)',
-          maskImage:
-            'linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)',
-        }}
-      >
-        <div
-          className="flex w-max items-stretch group-hover:[animation-play-state:paused] motion-reduce:animate-none"
-          style={{ animation: `collab-scroll ${durationSec}s linear infinite` }}
-        >
-          {loop.map((c, i) => {
-            const inner = (
-              <span className="flex items-center gap-3">
-                {c.logo ? (
-                  <img
-                    src={c.logo}
-                    alt={c.name}
-                    className="h-7 w-auto object-contain opacity-80"
-                  />
-                ) : null}
-                <span
-                  className="whitespace-nowrap text-[14px] font-normal tracking-wide text-[#5a5249]"
-                  style={{ fontFamily: "'EB Garamond', Georgia, serif" }}
-                >
-                  {c.name}
-                </span>
-              </span>
-            )
-
-            return (
-              <div
-                key={`${c.name}-${i}`}
-                className="mx-4 flex items-center rounded-sm border border-[#e8e3db] bg-white px-6 py-3 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-colors hover:border-[#cecbf6]"
-              >
-                {c.url ? (
-                  <a
-                    href={c.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="transition-opacity hover:opacity-70"
-                    aria-label={c.name}
-                  >
-                    {inner}
-                  </a>
-                ) : (
-                  inner
-                )}
-              </div>
-            )
-          })}
-        </div>
+      <div className="mq__row">
+        {loop.map((c, i) => {
+          const inner = (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {c.logo && <img src={c.logo} alt="" />}
+              {c.name}
+            </>
+          )
+          return c.url ? (
+            <a key={i} href={c.url} target="_blank" rel="noopener noreferrer" className="mq__item" aria-hidden={i >= items.length} tabIndex={i >= items.length ? -1 : 0}>
+              {inner}
+            </a>
+          ) : (
+            <span key={i} className="mq__item" aria-hidden={i >= items.length}>{inner}</span>
+          )
+        })}
       </div>
-    </>
+    </div>
   )
 }
